@@ -1,5 +1,40 @@
 .header {
-    background-color: lightblue;
+    color: #68FCF8;
+    text-shadow: .2vh .4vh white, -.3vh -.1vh #2090D8;
+    font-size: 4vh;
+    font-family: 'Open Sans', sans-serif;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.body {
+  background: black;
+}
+
+.menu-button {
+  color: #68FCF8;
+  text-shadow: 2px 2px white, -2px -1px #2090D8;
+  text-shadow: .1vh .2vh white, -.1vh -.05vh #2090D8;
+  font-size: 3vh;
+  font-family: 'Open Sans', sans-serif;
+  font-family: 'Press Start 2P', cursive;
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: 1px solid Transparent;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.menu-item {
+    padding-top: 5px;
+    margin-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+.menu-button:hover {
+  border: 1px solid #68FCF8;
 }
 
 .gameScreen {
@@ -17,18 +52,22 @@
 .flex-around {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-around;
+}
+
+.menu-wrapper {
+  background-image: url("resources/menu.png");
+  background-size: cover;
 }
 
 .menu {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin-left: 10vw;
-    margin-right: 10vw;
-    margin-bottom: 10vh;
-    margin-top: 10vw;
+    padding-top: 20vh;
+    padding-bottom: 30vh;
 }
+
