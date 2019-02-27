@@ -37,16 +37,25 @@
   border: 1px solid #68FCF8;
 }
 
+.canvas {
+  width: 85vh;
+  height: 85vh;
+}
 .gameScreen {
+    background-image: url("resources/background.png");
+    background-size: cover;
+}
+
+.gameScreen-wrapper {
     display: none;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin-left: 10vw;
-    margin-right: 10vw;
-    margin-bottom: 10vh;
-    margin-top: 10vw;
+/*    padding-top: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-bottom: 1vh;*/
 }
 
 .flex-around {
@@ -69,5 +78,9 @@
     align-items: center;
     padding-top: 20vh;
     padding-bottom: 30vh;
+}
+
+.credits {
+    display: none;
 }
 

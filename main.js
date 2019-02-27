@@ -18,14 +18,6 @@ CanvasRenderingContext2D.prototype.clear = function() {
 }
 
 
-function newGame() {
-  let menu = document.getElementById('menu');
-  menu.style.display = 'none';
-  let gameScreen = document.getElementById('gameScreen');
-  gameScreen.style.display = 'block';
-}
-
-
 function gameLoop(elapsedTime) {
   if (!gameOver) {
     processInput(elapsedTime);
