@@ -10,6 +10,17 @@
   background: black;
 }
 
+.menu-text {
+  color: #68FCF8;
+  text-shadow: 2px 2px white, -2px -1px #2090D8;
+  text-shadow: .1vh .2vh white, -.1vh -.05vh #2090D8;
+  font-size: 3vh;
+  font-family: 'Open Sans', sans-serif;
+  font-family: 'Press Start 2P', cursive;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 .menu-button {
   color: #68FCF8;
   text-shadow: 2px 2px white, -2px -1px #2090D8;
@@ -18,8 +29,7 @@
   font-family: 'Open Sans', sans-serif;
   font-family: 'Press Start 2P', cursive;
   background-color: Transparent;
-  background-repeat: no-repeat;
-  border: 1px solid Transparent;
+  background-repeat: no-repeat; border: 1px solid Transparent;
   cursor: pointer;
   overflow: hidden;
   outline: none;
@@ -27,6 +37,11 @@
   padding-bottom: 5px;
 }
 .menu-item {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
     padding-top: 5px;
     margin-top: 5px;
     padding-bottom: 5px;
@@ -44,6 +59,7 @@
 .gameScreen {
     background-image: url("resources/background.png");
     background-size: cover;
+
 }
 
 .gameScreen-wrapper {
@@ -68,19 +84,35 @@
 .menu-wrapper {
   background-image: url("resources/menu.png");
   background-size: cover;
+  width: 98vw;
+  height: 98vh;
+}
+
+.sub-menu {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .menu {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
     padding-top: 20vh;
-    padding-bottom: 30vh;
+/*    padding-bottom: 30vh;*/
 }
 
 .credits {
+    display: none;
+}
+.controls {
+    display: none;
+}
+.high-scores {
     display: none;
 }
 

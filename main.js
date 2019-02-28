@@ -1,22 +1,34 @@
-const canvasWidth = 500;
 var rectWidth = 50;
 var currentScore = 0;
 var highScores = [];
 var lastMoveStamp = 0;
 var gameOver = false;
+var moveRate = 5;
 
 var nextInput;
 var maze = [];
 var input = [];
 
 // all walls are listed as 2 cells, listed in the order of movement
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
+var canvas;
+var context;
+var canvasWidth;
 
-CanvasRenderingContext2D.prototype.clear = function() {
-  this.clearRect(0, 0, canvas.width, canvas.height);
+function newGame() {
+  let title = document.getElementById('title');
+  title.style.display = 'none';
+  let gameScreen = document.getElementById('gameScreen-wrapper');
+  gameScreen.style.display = 'flex';
+  canvas = document.getElementById('canvas');
+  context = canvas.getContext('2d');
+  canvasWidth = canvas.offsetWidth;
+  CanvasRenderingContext2D.prototype.clear = function() {
+    this.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+
+  gameLoop();
 }
-
 
 function gameLoop(elapsedTime) {
   if (!gameOver) {
@@ -35,17 +47,21 @@ function processInput(elapsedTime) {
 
 
 function update(elapsedTime) {
+  canvasWidth = canvas.offsetWidth;
   if(elapsedTime - lastMoveStamp >= moveRate){
   }
 }
 
 function render() {
   context.clear();
-  context.beginPath();
+  ship = new Image()
+  ship.src = "resources/ship.png"
+  context.drawImage(ship , 200, 200);
 }
 
 
 function checkInput (e) {
+  console.log(e.charCode)
   e = e || window.event;
   if ( e.keyCode == '38') {
     input.push('thrust');
@@ -53,7 +69,7 @@ function checkInput (e) {
     input.push('rotateCounter');
   } else if ( e.keyCode == '39') {
     input.push('rotateClock');
-  } else if ( e.charCode == '104') {
+  } else if ( e.charCode == '122') {
     input.push('hyperspace');
   }
 }
