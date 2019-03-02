@@ -1,27 +1,17 @@
 MyGame.main = (function(graphics, ship) {
+  'use strict';
   var currentScore = 0;
   var highScores = [];
   var lastMoveStamp = 0;
   var elapsedTime = 0;
   var gameOver = false;
-  var moveRate = 5;
+  var moveRate = 0;
 
   var nextInput;
   var input = [];
 
-
-//  let rotation = 0;
-//  let shipSpecTexture = {
-//    imageSrc: 'resources/ship.png',
-//    center: {x: graphics.canvas.width / 2 + .5, y: graphics.canvas.height / 2},
-//    width: 19,
-//    height: 17,
-//    rotation: 0,
-//    moveRate: 500 / 1000
-//  };
-  let shipSpec = ship.getShipSpec()
-  let shipTexture = graphics.Texture(shipSpec);
-
+  var shipSpec = ship.getShipSpec()
+  var shipTexture = graphics.Texture(shipSpec);
 
 
   gameLoop();
@@ -31,8 +21,8 @@ MyGame.main = (function(graphics, ship) {
       processInput(elapsedTime);
       update(elapsedTime);
     }
-      render();
-      requestAnimationFrame(gameLoop);
+    render();
+    requestAnimationFrame(gameLoop);
   }
 
 
@@ -44,6 +34,15 @@ MyGame.main = (function(graphics, ship) {
 
   function update(elapsedTime) {
     if(elapsedTime - lastMoveStamp >= moveRate){
+      if (nextInput === 'rotateCounter') {
+        ship.turnCounterClockwise();
+        shipSpec = ship.getShipSpec()
+        shipTexture = graphics.Texture(shipSpec);
+      } else if (nextInput === 'rotateClock') {
+        ship.turnClockwise();
+        shipSpec = ship.getShipSpec()
+        shipTexture = graphics.Texture(shipSpec);
+      }
     }
   }
 
@@ -58,7 +57,7 @@ MyGame.main = (function(graphics, ship) {
     e = e || window.event;
     if ( e.keyCode == '38') {
       input.push('thrust');
-    } else if ( e.keyCode == '40') {
+    } else if ( e.keyCode == '37') {
       input.push('rotateCounter');
     } else if ( e.keyCode == '39') {
       input.push('rotateClock');

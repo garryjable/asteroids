@@ -1,4 +1,5 @@
 MyGame.menuManager = (function() {
+  'use strict';
 
   function newGame() {
     let title = document.getElementById('title');

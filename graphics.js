@@ -7,6 +7,7 @@ MyGame.graphics = (function() {
     function clear() {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
+
     function refresh () {
         context.imageSmoothingEnabled = false;
         context.mozImageSmoothingEnabled = false;

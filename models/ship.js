@@ -1,13 +1,13 @@
 MyGame.ship = (function() {
   'use strict';
 
-  let width = 19;
-  let height = 17;
+  let width = 22;
+  let height = 24;
   let xCoord = 100;
   let yCoord = 100;
   let orientation = 0;
-  let speed = 0;;
-  let direction = 0;;
+  let speed = 0;
+  let direction = 0;
   let thrusting = false;;
 
   function getShipSpec() {
@@ -16,7 +16,7 @@ MyGame.ship = (function() {
       center: {x: xCoord, y: yCoord},
       width: width,
       height: height,
-      rotation: orientation,
+      rotation: this.orientation,
       moveRate: 500 / 1000
     };
     return shipSpecTexture;
@@ -26,19 +26,19 @@ MyGame.ship = (function() {
     return;
   }
 
-  function turnClockwise() {
-    if (orientation < 360) {
-      orientation++;
+  function turnClockwise(){
+    if (this.orientation < 6.25) {
+      this.orientation = this.orientation + .25;
     } else {
-      orientation = 0;
+      this.orientation = 0;
     }
   }
 
   function turnCounterClockwise() {
-    if (orientation > 0) {
-      orientation--;
+    if (this.orientation > 0) {
+      this.orientation = this.orientation - .25;
     } else {
-      orientation = 360;
+      this.orientation = 6.25;
     }
   }
 
@@ -63,7 +63,8 @@ MyGame.ship = (function() {
       hyperspace: hyperspace,
       fire: fire,
       thrust: thrust,
-      explode: explode
+      explode: explode,
+      orientation: orientation,
   };
 
   Object.defineProperty(api, 'width', {
@@ -96,9 +97,9 @@ MyGame.ship = (function() {
 
   Object.defineProperty(api, 'orientation', {
       value: orientation,
-      writable: false,
+      writable: true,
       enumerable: true,
-      configurable: false
+      configurable: true
   });
 
   Object.defineProperty(api, 'speed', {
