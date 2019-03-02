@@ -1,77 +1,72 @@
-var rectWidth = 50;
-var currentScore = 0;
-var highScores = [];
-var lastMoveStamp = 0;
-var gameOver = false;
-var moveRate = 5;
+MyGame.main = (function(graphics, ship) {
+  var currentScore = 0;
+  var highScores = [];
+  var lastMoveStamp = 0;
+  var elapsedTime = 0;
+  var gameOver = false;
+  var moveRate = 5;
 
-var nextInput;
-var maze = [];
-var input = [];
+  var nextInput;
+  var input = [];
 
-// all walls are listed as 2 cells, listed in the order of movement
-var canvas;
-var context;
-var canvasWidth;
 
-function newGame() {
-  let title = document.getElementById('title');
-  title.style.display = 'none';
-  let gameScreen = document.getElementById('gameScreen-wrapper');
-  gameScreen.style.display = 'flex';
-  canvas = document.getElementById('canvas');
-  context = canvas.getContext('2d');
-  canvasWidth = canvas.offsetWidth;
-  CanvasRenderingContext2D.prototype.clear = function() {
-    this.clearRect(0, 0, canvas.width, canvas.height);
-  }
+//  let rotation = 0;
+//  let shipSpecTexture = {
+//    imageSrc: 'resources/ship.png',
+//    center: {x: graphics.canvas.width / 2 + .5, y: graphics.canvas.height / 2},
+//    width: 19,
+//    height: 17,
+//    rotation: 0,
+//    moveRate: 500 / 1000
+//  };
+  let shipSpec = ship.getShipSpec()
+  let shipTexture = graphics.Texture(shipSpec);
+
 
 
   gameLoop();
-}
 
-function gameLoop(elapsedTime) {
-  if (!gameOver) {
-    processInput(elapsedTime);
-    update(elapsedTime);
+  function gameLoop(elapsedTime) {
+    if (!gameOver) {
+      processInput(elapsedTime);
+      update(elapsedTime);
+    }
+      render();
+      requestAnimationFrame(gameLoop);
   }
-    render();
-    requestAnimationFrame(gameLoop);
-}
 
 
-function processInput(elapsedTime) {
-  nextInput = input.pop();
-  input = []
-}
-
-
-function update(elapsedTime) {
-  canvasWidth = canvas.offsetWidth;
-  if(elapsedTime - lastMoveStamp >= moveRate){
+  function processInput(elapsedTime) {
+    nextInput = input.pop();
+    input = []
   }
-}
-
-function render() {
-  context.clear();
-  ship = new Image()
-  ship.src = "resources/ship.png"
-  context.drawImage(ship , 200, 200);
-}
 
 
-function checkInput (e) {
-  console.log(e.charCode)
-  e = e || window.event;
-  if ( e.keyCode == '38') {
-    input.push('thrust');
-  } else if ( e.keyCode == '40') {
-    input.push('rotateCounter');
-  } else if ( e.keyCode == '39') {
-    input.push('rotateClock');
-  } else if ( e.charCode == '122') {
-    input.push('hyperspace');
+  function update(elapsedTime) {
+    if(elapsedTime - lastMoveStamp >= moveRate){
+    }
   }
-}
 
-document.onkeypress = checkInput;
+  function render() {
+    graphics.clear();
+    graphics.refresh();
+    shipTexture.draw();
+  }
+
+
+  function checkInput (e) {
+    e = e || window.event;
+    if ( e.keyCode == '38') {
+      input.push('thrust');
+    } else if ( e.keyCode == '40') {
+      input.push('rotateCounter');
+    } else if ( e.keyCode == '39') {
+      input.push('rotateClock');
+    } else if ( e.charCode == '122') {
+      input.push('hyperspace');
+    }
+  }
+
+  document.onkeypress = checkInput;
+
+}(MyGame.graphics, MyGame.ship));

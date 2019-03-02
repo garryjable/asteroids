@@ -1,50 +1,127 @@
-class Ship {
-  constructor() {
+MyGame.ship = (function() {
+  'use strict';
+
+  let width = 19;
+  let height = 17;
+  let xCoord = 100;
+  let yCoord = 100;
+  let orientation = 0;
+  let speed = 0;;
+  let direction = 0;;
+  let thrusting = false;;
+
+  function getShipSpec() {
+    let shipSpecTexture = {
+      imageSrc: 'resources/ship.png',
+      center: {x: xCoord, y: yCoord},
+      width: width,
+      height: height,
+      rotation: orientation,
+      moveRate: 500 / 1000
+    };
+    return shipSpecTexture;
   }
 
-  get position() {
-    return this._position;
+  function update() {
+    return;
   }
 
-  get direction() {
-    return this._direction;
-  }
-
-  get speed() {
-    return this._direction;
-  }
-
-  get orientation() {
-    return this._orientation;
-  }
-
-  turnClockwise() {
-    if (this._orientation < 360) {
-      this._orientation++;
+  function turnClockwise() {
+    if (orientation < 360) {
+      orientation++;
     } else {
-      this._orientation = 0;
+      orientation = 0;
     }
   }
 
-  turnCounterClockwise() {
-    if (this._orientation > 0) {
-      this._orientation--;
+  function turnCounterClockwise() {
+    if (orientation > 0) {
+      orientation--;
     } else {
-      this._orientation = 360;
+      orientation = 360;
     }
   }
 
-  hyperspace() {
+  function hyperspace() {
   }
 
-  fire() {
+  function fire() {
   }
 
-  thrust() {
+  function thrust() {
 
   }
 
-  explode() {
+  function explode() {
   }
 
-}
+  let api = {
+      getShipSpec: getShipSpec,
+      update: update,
+      turnClockwise: turnClockwise,
+      turnCounterClockwise: turnCounterClockwise,
+      hyperspace: hyperspace,
+      fire: fire,
+      thrust: thrust,
+      explode: explode
+  };
+
+  Object.defineProperty(api, 'width', {
+      value: width,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'height', {
+      value: height,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'xCoord', {
+      value: xCoord,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'yCoord', {
+      value: yCoord,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'orientation', {
+      value: orientation,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'speed', {
+      value: orientation,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'direction', {
+      value: direction,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'thrusting', {
+      value: thrusting,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  return api;
+
+}());

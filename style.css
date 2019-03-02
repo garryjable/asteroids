@@ -50,9 +50,18 @@
 
 .menu-button:hover {
   border: 1px solid #68FCF8;
+  box-shadow: .1vh 0px 0px 0px white, 0px .1vh 0px 0px white, -.1vh 0px 0px 0px #2090D8, 0px -.1vh 0px 0px #2090D8;
 }
 
+canvas {
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+}
 .canvas {
+  
   width: 85vh;
   height: 85vh;
 }
