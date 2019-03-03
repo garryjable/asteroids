@@ -1,4 +1,4 @@
-MyGame.main = (function(graphics, ship) {
+MyGame.main = (function(graphics, ship, rockets) {
   var currentScore = 0;
   var highScores = [];
   var lastMoveStamp = 0;
@@ -7,8 +7,6 @@ MyGame.main = (function(graphics, ship) {
 
   var nextInput;
   var input = [];
-
-  var rockets = [];
 
   var shipSpec = ship.getShipSpec()
   var shipTexture = graphics.shipTexture(shipSpec);
@@ -43,6 +41,9 @@ MyGame.main = (function(graphics, ship) {
       ship.turnClockwise();
     } else if (nextInput === 'thrust') {
       ship.thrust();
+    } else if (nextInput === 'fire') {
+      let rocketParams = ship.fire();
+      let rocket = rockets.addRocket(rocketParams);
     }
     ship.update(graphics.canvas.width, graphics.canvas.height);
   }
@@ -66,6 +67,8 @@ MyGame.main = (function(graphics, ship) {
       input.push('rotateClock');
     } else if ( e.charCode == '122') {
       input.push('hyperspace');
+    } else if ( e.charCode == '32') {
+      input.push('fire');
     }
   }
 
