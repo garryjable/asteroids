@@ -1,27 +1,31 @@
 MyGame.main = (function(graphics, ship) {
-  'use strict';
   var currentScore = 0;
   var highScores = [];
   var lastMoveStamp = 0;
-  var elapsedTime = 0;
   var gameOver = false;
-  var moveRate = 0;
+  var moveRate = 10;
 
   var nextInput;
   var input = [];
 
+  var rockets = [];
+
   var shipSpec = ship.getShipSpec()
-  var shipTexture = graphics.Texture(shipSpec);
+  var shipTexture = graphics.shipTexture(shipSpec);
 
 
-  gameLoop();
+  performance.now();
+  requestAnimationFrame(gameLoop);
 
   function gameLoop(elapsedTime) {
     if (!gameOver) {
-      processInput(elapsedTime);
-      update(elapsedTime);
+      if(elapsedTime - lastMoveStamp >= moveRate){
+        lastMoveStamp = elapsedTime;
+        processInput(elapsedTime);
+        update(elapsedTime);
+        render();
+      }
     }
-    render();
     requestAnimationFrame(gameLoop);
   }
 
@@ -33,22 +37,21 @@ MyGame.main = (function(graphics, ship) {
 
 
   function update(elapsedTime) {
-    if(elapsedTime - lastMoveStamp >= moveRate){
-      if (nextInput === 'rotateCounter') {
-        ship.turnCounterClockwise();
-        shipSpec = ship.getShipSpec()
-        shipTexture = graphics.Texture(shipSpec);
-      } else if (nextInput === 'rotateClock') {
-        ship.turnClockwise();
-        shipSpec = ship.getShipSpec()
-        shipTexture = graphics.Texture(shipSpec);
-      }
+    if (nextInput === 'rotateCounter') {
+      ship.turnCounterClockwise();
+    } else if (nextInput === 'rotateClock') {
+      ship.turnClockwise();
+    } else if (nextInput === 'thrust') {
+      ship.thrust();
     }
+    ship.update(graphics.canvas.width, graphics.canvas.height);
   }
 
   function render() {
     graphics.clear();
     graphics.refresh();
+    shipSpec = ship.getShipSpec()
+    shipTexture.renderShip(shipSpec);
     shipTexture.draw();
   }
 

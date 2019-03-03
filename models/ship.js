@@ -1,34 +1,62 @@
 MyGame.ship = (function() {
   'use strict';
 
-  let width = 22;
-  let height = 24;
-  let xCoord = 100;
-  let yCoord = 100;
+  let width = 75;
+  let height = 75;
+  let xCoord = 500;
+  let yCoord = 500;
   let orientation = 0;
-  let speed = 0;
-  let direction = 0;
+  let xSpeed = 0;
+  let ySpeed = 0;
+  let acceleration = .5;
+  let turnRate = .174533;
+  let cycle = 6.2831853;
   let thrusting = false;;
 
   function getShipSpec() {
     let shipSpecTexture = {
       imageSrc: 'resources/ship.png',
-      center: {x: xCoord, y: yCoord},
+      center: {x: this.xCoord, y: this.yCoord},
       width: width,
       height: height,
       rotation: this.orientation,
-      moveRate: 500 / 1000
     };
     return shipSpecTexture;
   }
 
-  function update() {
+  function update(canvasWidth, canvasHeight) {
+    if (this.xSpeed > 0) {
+      if (this.xCoord + this.xSpeed > canvasWidth + this.width) {
+        this.xCoord = 0;
+      } else {
+        this.xCoord = this.xCoord + this.xSpeed;
+      }
+    } else if (this.xSpeed < 0) {
+      if (this.xCoord + this.xSpeed < 0 - this.width) {
+        this.xCoord = canvasWidth + this.width
+      } else {
+        this.xCoord = this.xCoord + this.xSpeed;
+      }
+    }
+    if (this.ySpeed > 0) {
+      if (this.yCoord + this.ySpeed > canvasHeight + this.height) {
+        this.yCoord = 0;
+      } else {
+        this.yCoord = this.yCoord + this.ySpeed;
+      }
+    } else if (this.ySpeed < 0) {
+      if (this.yCoord + this.ySpeed < 0 - this.height) {
+        this.yCoord = canvasHeight + this.width
+      } else {
+        this.yCoord = this.yCoord + this.ySpeed;
+      }
+    }
     return;
   }
 
   function turnClockwise(){
-    if (this.orientation < 6.25) {
-      this.orientation = this.orientation + .25;
+    if (this.orientation < this.cycle) {
+      this.orientation = this.orientation + this.turnRate;
     } else {
       this.orientation = 0;
     }
@@ -36,9 +64,9 @@ MyGame.ship = (function() {
 
   function turnCounterClockwise() {
     if (this.orientation > 0) {
-      this.orientation = this.orientation - .25;
+      this.orientation = this.orientation - this.turnRate;
     } else {
-      this.orientation = 6.25;
+      this.orientation = this.cycle;
     }
   }
 
@@ -46,10 +74,16 @@ MyGame.ship = (function() {
   }
 
   function fire() {
+    let rocketParams = {
+      center: {x: this.xCoord, y: this.yCoord},
+      rotation: this.orientation,
+    };
+    return rocketParams;
   }
 
   function thrust() {
-
+    this.xSpeed = this.xSpeed + Math.sin(this.orientation) * this.acceleration;
+    this.ySpeed = this.ySpeed - Math.cos(this.orientation) * this.acceleration;
   }
 
   function explode() {
@@ -65,6 +99,10 @@ MyGame.ship = (function() {
       thrust: thrust,
       explode: explode,
       orientation: orientation,
+      xSpeed: xSpeed,
+      ySpeed: ySpeed,
+      acceleration: acceleration,
+      cycle: cycle,
   };
 
   Object.defineProperty(api, 'width', {
@@ -83,14 +121,14 @@ MyGame.ship = (function() {
 
   Object.defineProperty(api, 'xCoord', {
       value: xCoord,
-      writable: false,
+      writable: true,
       enumerable: true,
       configurable: false
   });
 
   Object.defineProperty(api, 'yCoord', {
       value: yCoord,
-      writable: false,
+      writable: true,
       enumerable: true,
       configurable: false
   });
@@ -102,19 +140,27 @@ MyGame.ship = (function() {
       configurable: true
   });
 
-  Object.defineProperty(api, 'speed', {
-      value: orientation,
+  Object.defineProperty(api, 'xSpeed', {
+      value: xSpeed,
+      writable: true,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'ySpeed', {
+      value: ySpeed,
+      writable: true,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'turnRate', {
+      value: turnRate,
       writable: false,
       enumerable: true,
       configurable: false
   });
 
-  Object.defineProperty(api, 'direction', {
-      value: direction,
-      writable: false,
-      enumerable: true,
-      configurable: false
-  });
 
   Object.defineProperty(api, 'thrusting', {
       value: thrusting,

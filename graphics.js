@@ -9,13 +9,13 @@ MyGame.graphics = (function() {
     }
 
     function refresh () {
-        context.imageSmoothingEnabled = false;
-        context.mozImageSmoothingEnabled = false;
-        context.webkitImageSmoothingEnabled = false;
-        context.msImageSmoothingEnabled = false;
+//        context.imageSmoothingEnabled = false;
+//        context.mozImageSmoothingEnabled = false;
+//        context.webkitImageSmoothingEnabled = false;
+//        context.msImageSmoothingEnabled = false;
     }
 
-    function Texture(spec) {
+    function shipTexture(spec) {
         let ready = false;
         let image = new Image();
 
@@ -34,27 +34,29 @@ MyGame.graphics = (function() {
 
                 context.drawImage(
                     image,
-                    spec.center.x - spec.width / 2 + .5,
-                    spec.center.y - spec.height / 2 + .5,
+                    spec.center.x - spec.width / 2,
+                    spec.center.y - spec.height / 2,
                     spec.width, spec.height);
 
                 context.restore();
             }
         }
 
-        function updateRotation(howMuch) {
-            spec.rotation += howMuch;
+        function renderShip(newSpec) {
+            spec.rotation = newSpec.rotation;
+            spec.center.x = newSpec.center.x;
+            spec.center.y = newSpec.center.y;
         }
 
         return {
             draw: draw,
-            updateRotation: updateRotation
+            renderShip: renderShip
         };
     }
 
     let api = {
         clear: clear,
-        Texture: Texture,
+        shipTexture: shipTexture,
         refresh: refresh
     };
 
