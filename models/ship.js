@@ -76,7 +76,7 @@ MyGame.ship = (function() {
   function fire() {
     let rocketParams = {
       center: {x: this.xCoord, y: this.yCoord},
-      rotation: this.orientation,
+      orientation: this.orientation,
       xSpeed: this.xSpeed,
       ySpeed: this.ySpeed,
     };

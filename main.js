@@ -43,7 +43,8 @@ MyGame.main = (function(graphics, ship, rockets) {
       ship.thrust();
     } else if (nextInput === 'fire') {
       let rocketParams = ship.fire();
-      let rocket = rockets.addRocket(rocketParams);
+      let rocket = rockets.createRocket(rocketParams);
+      rockets.addRocket(rocket);
     }
     ship.update(graphics.canvas.width, graphics.canvas.height);
   }
@@ -51,7 +52,8 @@ MyGame.main = (function(graphics, ship, rockets) {
   function render() {
     graphics.clear();
     graphics.refresh();
-    shipSpec = ship.getShipSpec()
+    shipSpec = ship.getShipSpec();
+    rocketsSpecs = rockets.getRocketsSpecs();
     shipTexture.renderShip(shipSpec);
     shipTexture.draw();
   }
@@ -74,4 +76,4 @@ MyGame.main = (function(graphics, ship, rockets) {
 
   document.onkeypress = checkInput;
 
-}(MyGame.graphics, MyGame.ship));
+}(MyGame.graphics, MyGame.ship, MyGame.rockets));

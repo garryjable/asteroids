@@ -8,15 +8,22 @@ MyGame.rockets = (function() {
 
   function getRocketsSpecs(canvasWidth, canvasHeight) {
     let rocketsSpecs = [];
-    for (let i = 0; i < this.rockets.length; i++) {
+    for (let i = 0; i < this.rocketList.length; i++) {
       this.rocketList[i].update(canvasWidth, canvasHeight);
       let rocketSpec = this.rocketList[i].getRocketSpec();
       rocketsSpecs.push(rocketSpec);
     }
-    return rocketsSpecs;
+    return {
+             specList: rocketsSpecs,
+             imageSrc: 'resources/rocket.png',
+           };
   }
 
-  function addRocket(params) {
+  function addRocket(rocket) {
+    this.rocketList.push(rocket);
+  }
+
+  function createRocket(params) {
     let width = 10;
     let height = 10;
 
@@ -32,7 +39,6 @@ MyGame.rockets = (function() {
 
     function getRocketSpec() {
       let rocketSpecTexture = {
-        imageSrc: 'resources/rocket.png',
         center: {x: this.xCoord, y: this.yCoord},
         width: width,
         height: height,
@@ -156,6 +162,7 @@ MyGame.rockets = (function() {
       rocketList: rocketList,
       getRocketsSpecs: getRocketsSpecs,
       addRocket: addRocket,
+      createRocket: createRocket,
   };
 
   Object.defineProperty(api, 'rocketList', {
