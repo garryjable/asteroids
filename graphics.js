@@ -54,7 +54,7 @@ MyGame.graphics = (function() {
         };
     }
 
-    function rocketTexture(specs) {
+    function rocketsTexture(specs) {
         let ready = false;
         let image = new Image();
 
@@ -101,6 +101,7 @@ MyGame.graphics = (function() {
     let api = {
         clear: clear,
         shipTexture: shipTexture,
+        rocketsTexture: rocketsTexture,
         refresh: refresh
     };
 

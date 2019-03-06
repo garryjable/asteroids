@@ -11,6 +11,9 @@ MyGame.main = (function(graphics, ship, rockets) {
   var shipSpec = ship.getShipSpec()
   var shipTexture = graphics.shipTexture(shipSpec);
 
+  var rocketsSpecs = rockets.getRocketsSpecs()
+  var rocketsTexture = graphics.rocketsTexture(rocketsSpecs);
+
 
   performance.now();
   requestAnimationFrame(gameLoop);
@@ -54,6 +57,8 @@ MyGame.main = (function(graphics, ship, rockets) {
     graphics.refresh();
     shipSpec = ship.getShipSpec();
     rocketsSpecs = rockets.getRocketsSpecs();
+    rocketsTexture.renderRockets(rocketsSpecs);
+    rocketsTexture.draw();
     shipTexture.renderShip(shipSpec);
     shipTexture.draw();
   }
