@@ -11,7 +11,9 @@ MyGame.rockets = (function() {
     for (let i = 0; i < this.rocketList.length; i++) {
       this.rocketList[i].update(canvasWidth, canvasHeight);
       let rocketSpec = this.rocketList[i].getRocketSpec();
-      rocketsSpecs.push(rocketSpec);
+      if (rocketSpec.age < 100) {
+        rocketsSpecs.push(rocketSpec);
+      }
     }
     return {
              specList: rocketsSpecs,
@@ -24,10 +26,11 @@ MyGame.rockets = (function() {
   }
 
   function createRocket(params) {
-    let width = 10;
-    let height = 10;
+    let width = 20;
+    let height = 20;
 
-    const rocketSpeed = 1;
+    const rocketSpeed = 15;
+    const buffer = 25;
     let age = 0;
     let gone = false;
 
@@ -43,7 +46,7 @@ MyGame.rockets = (function() {
         width: width,
         height: height,
         rotation: this.orientation,
-        gone: this.gone,
+        age: this.age,
       };
       return rocketSpecTexture;
     }
@@ -75,10 +78,8 @@ MyGame.rockets = (function() {
           this.yCoord = this.yCoord + this.ySpeed;
         }
       }
-      if ( age < 100) {
-        age++;
-      } else {
-        gone = true;
+      if (this.age < 100) {
+        this.age++;
       }
       return;
     }
@@ -148,8 +149,8 @@ MyGame.rockets = (function() {
         configurable: false
     });
 
-    Object.defineProperty(api, 'gone', {
-        value: gone,
+    Object.defineProperty(api, 'age', {
+        value: age,
         writable: true,
         enumerable: true,
         configurable: false

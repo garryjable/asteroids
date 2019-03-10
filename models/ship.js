@@ -11,7 +11,8 @@ MyGame.ship = (function() {
   let acceleration = .5;
   let turnRate = .174533;
   let cycle = 6.2831853;
-  let thrusting = false;;
+  let thrusting = false;
+  let turning = 0;
 
   function getShipSpec() {
     let shipSpecTexture = {
@@ -50,6 +51,14 @@ MyGame.ship = (function() {
       } else {
         this.yCoord = this.yCoord + this.ySpeed;
       }
+    }
+    if (this.thrusting) {
+      this.thrust();
+    }
+    if (this.turning > 0 ) {
+      this.turnClockwise();
+    } else if (this.turning < 0) {
+      this.turnCounterClockwise();
     }
     return;
   }
@@ -166,7 +175,14 @@ MyGame.ship = (function() {
 
   Object.defineProperty(api, 'thrusting', {
       value: thrusting,
-      writable: false,
+      writable: true,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'turning', {
+      value: turning,
+      writable: true,
       enumerable: true,
       configurable: false
   });

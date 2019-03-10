@@ -38,12 +38,16 @@ MyGame.main = (function(graphics, ship, rockets) {
 
 
   function update(elapsedTime) {
-    if (nextInput === 'rotateCounter') {
-      ship.turnCounterClockwise();
-    } else if (nextInput === 'rotateClock') {
-      ship.turnClockwise();
-    } else if (nextInput === 'thrust') {
-      ship.thrust();
+    if (nextInput === 'startRotateCounter') {
+      ship.turning = -1;
+    } else if (nextInput === 'startRotateClock') {
+      ship.turning = 1;
+    } else if (nextInput === 'stopRotate') {
+      ship.turning = 0;
+    } else if (nextInput === 'startThrust') {
+      ship.thrusting = true;
+    } else if (nextInput === 'stopThrust') {
+      ship.thrusting = false;
     } else if (nextInput === 'fire') {
       let rocketParams = ship.fire();
       let rocket = rockets.createRocket(rocketParams);
@@ -64,21 +68,33 @@ MyGame.main = (function(graphics, ship, rockets) {
   }
 
 
-  function checkInput (e) {
+  function startInput (e) {
     e = e || window.event;
     if ( e.keyCode == '38') {
-      input.push('thrust');
+      input.push('startThrust');
     } else if ( e.keyCode == '37') {
-      input.push('rotateCounter');
+      input.push('startRotateCounter');
     } else if ( e.keyCode == '39') {
-      input.push('rotateClock');
-    } else if ( e.charCode == '122') {
+      input.push('startRotateClock');
+    } else if ( e.keyCode == '122') {
       input.push('hyperspace');
-    } else if ( e.charCode == '32') {
+    } else if ( e.keyCode == '32') {
       input.push('fire');
     }
   }
 
-  document.onkeypress = checkInput;
+  function stopInput (e) {
+    e = e || window.event;
+    if ( e.keyCode == '38') {
+      input.push('stopThrust');
+    } else if ( e.keyCode == '37') {
+      input.push('stopRotate');
+    } else if ( e.keyCode == '39') {
+      input.push('stopRotate');
+    }
+  }
+
+  document.onkeydown = startInput;
+  document.onkeyup = stopInput;
 
 }(MyGame.graphics, MyGame.ship, MyGame.rockets));

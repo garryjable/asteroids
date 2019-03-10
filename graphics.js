@@ -57,6 +57,7 @@ MyGame.graphics = (function() {
     function rocketsTexture(specs) {
         let ready = false;
         let image = new Image();
+        let specList = specs.specList;
 
         image.onload = function() {
             ready = true;
@@ -65,18 +66,18 @@ MyGame.graphics = (function() {
 
         function draw() {
             if (ready) {
-                for (let i = 0; i < specs.length; i++) {
+                for (let i = 0; i < this.specList.length; i++) {
                   context.save();
 
-                  context.translate(specs[i].center.x, specs[i].center.y);
-                  context.rotate(specs[i].orientation);
-                  context.translate(-specs[i].center.x, -specs[i].center.y);
+                  context.translate(this.specList[i].center.x, this.specList[i].center.y);
+                  context.rotate(this.specList[i].rotation);
+                  context.translate(-this.specList[i].center.x, -this.specList[i].center.y);
 
                   context.drawImage(
                       image,
-                      specs[i].center.x - specs[i].width / 2,
-                      specs[i].center.y - specs[i].height / 2,
-                      specs[i].width, specs[i].height);
+                      this.specList[i].center.x - this.specList[i].width / 2,
+                      this.specList[i].center.y - this.specList[i].height / 2,
+                      this.specList[i].width, this.specList[i].height);
 
                   context.restore();
                 }
@@ -84,17 +85,27 @@ MyGame.graphics = (function() {
         }
 
         function renderRockets(newSpecs) {
-          for (let i = 0; i < newSpecs.length; i++) {
-            specs[i].rotation = newSpec.specList[i].rotation;
-            specs[i].center.x = newSpec.specList[i].center.x;
-            specs[i].center.y = newSpec.specList[i].center.y;
+          this.specList = [];
+          for (let i = 0; i < newSpecs.specList.length; i++) {
+           this.specList.push(newSpecs.specList[i]);
           }
         }
 
-        return {
+        let api = {
             draw: draw,
-            renderRockets: renderRockets
+            renderRockets: renderRockets,
+            specList: specList,
         };
+
+       Object.defineProperty(api, 'specList', {
+           value: specList,
+           writable: true,
+           enumerable: true,
+           configurable: false
+       });
+
+
+        return api;
     }
 
 
