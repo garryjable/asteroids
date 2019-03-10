@@ -56,7 +56,7 @@ MyGame.main = (function(graphics, ship, rockets) {
     graphics.clear();
     graphics.refresh();
     shipSpec = ship.getShipSpec();
-    rocketsSpecs = rockets.getRocketsSpecs();
+    rocketsSpecs = rockets.getRocketsSpecs(graphics.canvas.width, graphics.canvas.height);
     rocketsTexture.renderRockets(rocketsSpecs);
     rocketsTexture.draw();
     shipTexture.renderShip(shipSpec);
