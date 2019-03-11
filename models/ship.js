@@ -10,8 +10,9 @@ MyGame.ship = (function() {
   let orientation = 0;
   let xSpeed = 0;
   let ySpeed = 0;
-  let acceleration = .5;
-  let turnRate = .174533;
+  let acceleration = .3;
+//  let turnRate = .174533;
+  let turnRate = .13089975;
   let cycle = 6.2831853;
   let thrusting = false;
   let turning = 0;
@@ -25,6 +26,15 @@ MyGame.ship = (function() {
       rotation: this.orientation,
     };
     return shipSpecTexture;
+  }
+
+  function getCollisionLoc() {
+    let shipCoord = {
+      xCoord: this.xCoord,
+      yCoord: this.yCoord,
+      radius: this.width / 2,
+    }
+    return shipCoord;
   }
 
   function update(canvasWidth, canvasHeight) {
@@ -69,7 +79,7 @@ MyGame.ship = (function() {
     if (this.orientation < this.cycle) {
       this.orientation = this.orientation + this.turnRate;
     } else {
-      this.orientation = 0;
+      this.orientation = this.orientation + this.turnRate - this.cycle;
     }
   }
 
@@ -77,7 +87,7 @@ MyGame.ship = (function() {
     if (this.orientation > 0) {
       this.orientation = this.orientation - this.turnRate;
     } else {
-      this.orientation = this.cycle;
+      this.orientation = this.cycle + this.orientation - this.turnRate;
     }
   }
 
@@ -111,6 +121,7 @@ MyGame.ship = (function() {
       update: update,
       turnClockwise: turnClockwise,
       turnCounterClockwise: turnCounterClockwise,
+      getCollisionLoc: getCollisionLoc,
       hyperspace: hyperspace,
       fire: fire,
       thrust: thrust,

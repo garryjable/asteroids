@@ -1,4 +1,4 @@
-MyGame.main = (function(graphics, ship, rockets, asteroids) {
+MyGame.main = (function(graphics, collisions, ship, rockets, asteroids) {
   var currentScore = 0;
   var highScores = [];
   var lastMoveStamp = 0;
@@ -71,6 +71,8 @@ MyGame.main = (function(graphics, ship, rockets, asteroids) {
         let asteroidParams = asteroids.spawn(graphics.canvas.width, graphics.canvas.height, level);
         asteroids.addAsteroids(asteroidParams);
     }
+    rockets.update(graphics.canvas.width, graphics.canvas.height);
+    collisions.checkCollisions(rockets.getCollisionList(), asteroids.getCollisionList(), ship.getCollisionLoc());
     ship.update(graphics.canvas.width, graphics.canvas.height);
   }
 
@@ -120,4 +122,4 @@ MyGame.main = (function(graphics, ship, rockets, asteroids) {
   document.onkeydown = startInput;
   document.onkeyup = stopInput;
 
-}(MyGame.graphics, MyGame.ship, MyGame.rockets, MyGame.asteroids));
+}(MyGame.graphics, MyGame.collisions, MyGame.ship, MyGame.rockets, MyGame.asteroids));

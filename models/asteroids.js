@@ -19,6 +19,19 @@ MyGame.asteroids = (function() {
            };
   }
 
+  function getCollisionList() {
+    let collisionList = [];
+    for (let i = 0; i < this.asteroidList.length; i++) {
+      let asteroidCoord = {
+        xCoord: this.asteroidList[i].xCoord,
+        yCoord: this.asteroidList[i].yCoord,
+        radius: this.asteroidList[i].width / 2,
+      }
+      collisionList.push(asteroidCoord);
+    }
+    return collisionList;
+  }
+
   function spawn(canvasWidth, canvasHeight, level) {
     const buffer = 75;
     const cycle = 6.2831853;
@@ -28,7 +41,7 @@ MyGame.asteroids = (function() {
         let asteroidParams;
         let coinFlip = Math.floor(Math.random() * (2));
         let randOrientation = Math.random() * (cycle);
-        let randTurnRate = Math.random() * (cycle) / 360;
+        let randTurnRate = (-cycle + Math.random() * (Math.abs(-cycle) + cycle)) / 360;
         let randXSpeed = Math.random() * (maxSpeed);
         let randYSpeed = Math.random() * (maxSpeed);
         let randYCoord;
@@ -215,6 +228,7 @@ MyGame.asteroids = (function() {
       addAsteroids: addAsteroids,
       createAsteroid: createAsteroid,
       spawn: spawn,
+      getCollisionList: getCollisionList,
   };
 
   Object.defineProperty(api, 'asteroidList', {

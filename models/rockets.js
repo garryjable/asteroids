@@ -3,22 +3,41 @@ MyGame.rockets = (function() {
 
   let rocketList = [];
 
-  function update() {
+  function update(canvasWidth, canvasHeight) {
+    let newRocketList = [];
+    for (let i = 0; i < this.rocketList.length; i++) {
+      this.rocketList[i].update(canvasWidth, canvasHeight);
+      if (this.rocketList[i].age * 15 < canvasWidth * .60) {
+        newRocketList.push(this.rocketList[i]);
+      }
+    }
+    this.rocketList = newRocketList;
+
   }
 
   function getRocketsSpecs(canvasWidth, canvasHeight) {
     let rocketsSpecs = [];
     for (let i = 0; i < this.rocketList.length; i++) {
-      this.rocketList[i].update(canvasWidth, canvasHeight);
       let rocketSpec = this.rocketList[i].getRocketSpec();
-      if (rocketSpec.age * 15 < canvasWidth * .70) {
-        rocketsSpecs.push(rocketSpec);
-      }
+      rocketsSpecs.push(rocketSpec);
     }
     return {
              specList: rocketsSpecs,
              imageSrc: 'resources/rocket.png',
            };
+  }
+
+  function getCollisionList() {
+    let collisionList = [];
+    for (let i = 0; i < this.rocketList.length; i++) {
+      let rocketCoord = {
+        xCoord: this.rocketList[i].xCoord,
+        yCoord: this.rocketList[i].yCoord,
+        radius: this.rocketList[i].width / 2,
+      }
+      collisionList.push(rocketCoord);
+    }
+    return collisionList;
   }
 
   function addRocket(rocket) {
@@ -170,8 +189,10 @@ MyGame.rockets = (function() {
   let api = {
       rocketList: rocketList,
       getRocketsSpecs: getRocketsSpecs,
+      update: update,
       addRocket: addRocket,
       createRocket: createRocket,
+      getCollisionList: getCollisionList,
   };
 
   Object.defineProperty(api, 'rocketList', {
