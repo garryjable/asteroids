@@ -4,6 +4,8 @@ MyGame.main = (function(graphics, ship, rockets, asteroids) {
   var lastMoveStamp = 0;
   var gameOver = false;
   var moveRate = 10;
+  var level = 1;
+  var levelComplete = true;
 
   var nextInput;
   var input = [];
@@ -14,6 +16,8 @@ MyGame.main = (function(graphics, ship, rockets, asteroids) {
   var rocketsSpecs = rockets.getRocketsSpecs()
   var rocketsTexture = graphics.rocketsTexture(rocketsSpecs);
 
+  var asteroidsSpecs = asteroids.getAsteroidsSpecs()
+  var asteroidsTexture = graphics.asteroidsTexture(asteroidsSpecs);
 
   performance.now();
   requestAnimationFrame(gameLoop);
@@ -59,10 +63,13 @@ MyGame.main = (function(graphics, ship, rockets, asteroids) {
         if (rocketParams !== false) {
             let rocket = rockets.createRocket(rocketParams);
             rockets.addRocket(rocket);
-            let asteroid = asteroids.createAsteroid(rocketParams);
-            asteroids.addAsteroid(asteroid);
         }
       }
+    }
+    if (levelComplete === true) {
+        levelComplete = false;
+        let asteroidParams = asteroids.spawn(graphics.canvas.width, graphics.canvas.height, level);
+        asteroids.addAsteroids(asteroidParams);
     }
     ship.update(graphics.canvas.width, graphics.canvas.height);
   }
@@ -70,10 +77,13 @@ MyGame.main = (function(graphics, ship, rockets, asteroids) {
   function render() {
     graphics.clear();
     graphics.refresh();
-    shipSpec = ship.getShipSpec();
     rocketsSpecs = rockets.getRocketsSpecs(graphics.canvas.width, graphics.canvas.height);
     rocketsTexture.renderRockets(rocketsSpecs);
     rocketsTexture.draw();
+    asteroidsSpecs = asteroids.getAsteroidsSpecs(graphics.canvas.width, graphics.canvas.height);
+    asteroidsTexture.renderAsteroids(asteroidsSpecs);
+    asteroidsTexture.draw();
+    shipSpec = ship.getShipSpec();
     shipTexture.renderShip(shipSpec);
     shipTexture.draw();
   }

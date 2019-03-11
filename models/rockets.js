@@ -11,7 +11,7 @@ MyGame.rockets = (function() {
     for (let i = 0; i < this.rocketList.length; i++) {
       this.rocketList[i].update(canvasWidth, canvasHeight);
       let rocketSpec = this.rocketList[i].getRocketSpec();
-      if (rocketSpec.age < 100) {
+      if (rocketSpec.age * 15 < canvasWidth * .70) {
         rocketsSpecs.push(rocketSpec);
       }
     }

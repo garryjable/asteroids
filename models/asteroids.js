@@ -6,14 +6,12 @@ MyGame.asteroids = (function() {
   function update() {
   }
 
-  function getAsteroidSpecs(canvasWidth, canvasHeight) {
+  function getAsteroidsSpecs(canvasWidth, canvasHeight) {
     let asteroidsSpecs = [];
     for (let i = 0; i < this.asteroidList.length; i++) {
       this.asteroidList[i].update(canvasWidth, canvasHeight);
       let asteroidSpec = this.asteroidList[i].getAsteroidSpec();
-      if (asteroidSpec.age < 100) {
-        asteroidsSpecs.push(asteroidSpec);
-      }
+      asteroidsSpecs.push(asteroidSpec);
     }
     return {
              specList: asteroidsSpecs,
@@ -21,26 +19,61 @@ MyGame.asteroids = (function() {
            };
   }
 
-  function addAsteroid(asteroid) {
-    this.asteroidList.push(asteroid);
+  function spawn(canvasWidth, canvasHeight, level) {
+    const buffer = 75;
+    const cycle = 6.2831853;
+    let paramList = [];
+    let maxSpeed = 2;
+      for (let i = 0; i < level; i++) {
+        let asteroidParams;
+        let coinFlip = Math.floor(Math.random() * (2));
+        let randOrientation = Math.random() * (cycle);
+        let randTurnRate = Math.random() * (cycle) / 360;
+        let randXSpeed = Math.random() * (maxSpeed);
+        let randYSpeed = Math.random() * (maxSpeed);
+        let randYCoord;
+        let randXCoord;
+        if (coinFlip) {
+          randYCoord = Math.floor(Math.random() * (canvasHeight + 1));
+          randXCoord = canvasWidth + (buffer / 2);
+        } else {
+          randXCoord = Math.floor(Math.random() * (canvasWidth + 1));
+          randYCoord = canvasHeight + (buffer / 2);
+        }
+        asteroidParams = {
+          center: {x: randXCoord, y: randYCoord},
+          orientation: randOrientation,
+          turnRate: randTurnRate,
+          xSpeed: randXSpeed,
+          ySpeed: randYSpeed,
+        };
+        paramList.push(asteroidParams);
+      }
+    return paramList;
+  }
+
+  function addAsteroids(paramList) {
+    for (let i = 0; i < paramList.length; i++) {
+       let asteroid = this.createAsteroid(paramList[i]);
+       this.asteroidList.push(asteroid);
+    }
   }
 
   function createAsteroid(params) {
-    let width = 20;
-    let height = 20;
+    let width = 40;
+    let height = 40;
 
     let size = 3;
 
-    const asteroidSpeed = 15;
     const buffer = 75;
-    let turnRate = .174533;
-    let cycle = 6.2831853;
+    const cycle = 6.2831853;
+    let turnRate = params.turnRate;
 
     let xCoord = params.center.x;
     let yCoord = params.center.y;
     let orientation = params.orientation;
-    let xSpeed = params.xSpeed + asteroidSpeed * Math.sin(params.orientation);
-    let ySpeed = params.ySpeed - asteroidSpeed * Math.cos(params.orientation);
+    let xSpeed = params.xSpeed;
+    let ySpeed = params.ySpeed;
 
     function getAsteroidSpec() {
       let asteroidSpecTexture = {
@@ -79,10 +112,6 @@ MyGame.asteroids = (function() {
           this.yCoord = this.yCoord + this.ySpeed;
         }
       }
-      if (this.age < 100) {
-        this.age++;
-      }
-
       if (this.orientation < this.cycle) {
         this.orientation = this.orientation + this.turnRate;
       } else {
@@ -165,14 +194,27 @@ MyGame.asteroids = (function() {
         configurable: false
     });
 
+    Object.defineProperty(api, 'cycle', {
+        value: cycle,
+        writable: false,
+        enumerable: true,
+        configurable: false
+    });
+
+    Object.defineProperty(api, 'turnRate', {
+        value: turnRate,
+        writable: false,
+        enumerable: true,
+        configurable: false
+    });
     return api;
   }
 
   let api = {
-      asteroidList: asteroidList,
-      getAsteroidSpecs: getAsteroidSpecs,
-      addAsteroid: addAsteroid,
+      getAsteroidsSpecs: getAsteroidsSpecs,
+      addAsteroids: addAsteroids,
       createAsteroid: createAsteroid,
+      spawn: spawn,
   };
 
   Object.defineProperty(api, 'asteroidList', {

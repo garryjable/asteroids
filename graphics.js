@@ -108,11 +108,67 @@ MyGame.graphics = (function() {
         return api;
     }
 
+    function asteroidsTexture(specs) {
+        let ready = false;
+        let image = new Image();
+        let specList = specs.specList;
+
+        image.onload = function() {
+            ready = true;
+        };
+        image.src = specs.imageSrc;
+
+        function draw() {
+            if (ready) {
+                for (let i = 0; i < this.specList.length; i++) {
+                  context.save();
+
+                  context.translate(this.specList[i].center.x, this.specList[i].center.y);
+                  context.rotate(this.specList[i].rotation);
+                  context.translate(-this.specList[i].center.x, -this.specList[i].center.y);
+
+                  context.drawImage(
+                      image,
+                      this.specList[i].center.x - this.specList[i].width / 2,
+                      this.specList[i].center.y - this.specList[i].height / 2,
+                      this.specList[i].width, this.specList[i].height);
+
+                  context.restore();
+                }
+            }
+        }
+
+        function renderAsteroids(newSpecs) {
+          this.specList = [];
+          for (let i = 0; i < newSpecs.specList.length; i++) {
+           this.specList.push(newSpecs.specList[i]);
+          }
+        }
+
+        let api = {
+            draw: draw,
+            renderAsteroids: renderAsteroids,
+            specList: specList,
+        };
+
+       Object.defineProperty(api, 'specList', {
+           value: specList,
+           writable: true,
+           enumerable: true,
+           configurable: false
+       });
+
+
+        return api;
+    }
+
+
 
     let api = {
         clear: clear,
         shipTexture: shipTexture,
         rocketsTexture: rocketsTexture,
+        asteroidsTexture: asteroidsTexture,
         refresh: refresh
     };
 
