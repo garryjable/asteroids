@@ -1,4 +1,4 @@
-MyGame.main = (function(graphics, ship, rockets) {
+MyGame.main = (function(graphics, ship, rockets, asteroids) {
   var currentScore = 0;
   var highScores = [];
   var lastMoveStamp = 0;
@@ -32,26 +32,37 @@ MyGame.main = (function(graphics, ship, rockets) {
 
 
   function processInput(elapsedTime) {
-    nextInput = input.pop();
+    //nextInput = input.pop();
+    nextInput = input.filter(onlyUnique);
     input = []
+  }
+
+  function onlyUnique(value, index, self) {
+      return self.indexOf(value) === index;
   }
 
 
   function update(elapsedTime) {
-    if (nextInput === 'startRotateCounter') {
-      ship.turning = -1;
-    } else if (nextInput === 'startRotateClock') {
-      ship.turning = 1;
-    } else if (nextInput === 'stopRotate') {
-      ship.turning = 0;
-    } else if (nextInput === 'startThrust') {
-      ship.thrusting = true;
-    } else if (nextInput === 'stopThrust') {
-      ship.thrusting = false;
-    } else if (nextInput === 'fire') {
-      let rocketParams = ship.fire();
-      let rocket = rockets.createRocket(rocketParams);
-      rockets.addRocket(rocket);
+    for (let i = 0; i < nextInput.length; i++) {
+      if (nextInput[i] === 'startRotateCounter') {
+        ship.turning = -1;
+      } else if (nextInput[i] === 'startRotateClock') {
+        ship.turning = 1;
+      } else if (nextInput[i] === 'stopRotate') {
+        ship.turning = 0;
+      } else if (nextInput[i] === 'startThrust') {
+        ship.thrusting = true;
+      } else if (nextInput[i] === 'stopThrust') {
+        ship.thrusting = false;
+      } else if (nextInput[i] === 'fire') {
+        let rocketParams = ship.fire(elapsedTime);
+        if (rocketParams !== false) {
+            let rocket = rockets.createRocket(rocketParams);
+            rockets.addRocket(rocket);
+            let asteroid = asteroids.createAsteroid(rocketParams);
+            asteroids.addAsteroid(asteroid);
+        }
+      }
     }
     ship.update(graphics.canvas.width, graphics.canvas.height);
   }
@@ -83,6 +94,8 @@ MyGame.main = (function(graphics, ship, rockets) {
     }
   }
 
+
+
   function stopInput (e) {
     e = e || window.event;
     if ( e.keyCode == '38') {
@@ -97,4 +110,4 @@ MyGame.main = (function(graphics, ship, rockets) {
   document.onkeydown = startInput;
   document.onkeyup = stopInput;
 
-}(MyGame.graphics, MyGame.ship, MyGame.rockets));
+}(MyGame.graphics, MyGame.ship, MyGame.rockets, MyGame.asteroids));

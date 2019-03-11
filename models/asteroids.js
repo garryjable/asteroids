@@ -1,54 +1,55 @@
-MyGame.rockets = (function() {
+MyGame.asteroids = (function() {
   'use strict';
 
-  let rocketList = [];
+  let asteroidList = [];
 
   function update() {
   }
 
-  function getRocketsSpecs(canvasWidth, canvasHeight) {
-    let rocketsSpecs = [];
-    for (let i = 0; i < this.rocketList.length; i++) {
-      this.rocketList[i].update(canvasWidth, canvasHeight);
-      let rocketSpec = this.rocketList[i].getRocketSpec();
-      if (rocketSpec.age < 100) {
-        rocketsSpecs.push(rocketSpec);
+  function getAsteroidSpecs(canvasWidth, canvasHeight) {
+    let asteroidsSpecs = [];
+    for (let i = 0; i < this.asteroidList.length; i++) {
+      this.asteroidList[i].update(canvasWidth, canvasHeight);
+      let asteroidSpec = this.asteroidList[i].getAsteroidSpec();
+      if (asteroidSpec.age < 100) {
+        asteroidsSpecs.push(asteroidSpec);
       }
     }
     return {
-             specList: rocketsSpecs,
-             imageSrc: 'resources/rocket.png',
+             specList: asteroidsSpecs,
+             imageSrc: 'resources/asteroid-large.png',
            };
   }
 
-  function addRocket(rocket) {
-    this.rocketList.push(rocket);
+  function addAsteroid(asteroid) {
+    this.asteroidList.push(asteroid);
   }
 
-  function createRocket(params) {
+  function createAsteroid(params) {
     let width = 20;
     let height = 20;
 
-    const rocketSpeed = 15;
+    let size = 3;
+
+    const asteroidSpeed = 15;
     const buffer = 75;
-    let age = 0;
-    let gone = false;
+    let turnRate = .174533;
+    let cycle = 6.2831853;
 
     let xCoord = params.center.x;
     let yCoord = params.center.y;
     let orientation = params.orientation;
-    let xSpeed = params.xSpeed + rocketSpeed * Math.sin(params.orientation);
-    let ySpeed = params.ySpeed - rocketSpeed * Math.cos(params.orientation);
+    let xSpeed = params.xSpeed + asteroidSpeed * Math.sin(params.orientation);
+    let ySpeed = params.ySpeed - asteroidSpeed * Math.cos(params.orientation);
 
-    function getRocketSpec() {
-      let rocketSpecTexture = {
+    function getAsteroidSpec() {
+      let asteroidSpecTexture = {
         center: {x: this.xCoord, y: this.yCoord},
-        width: width,
-        height: height,
+        width: width * size,
+        height: height * size,
         rotation: this.orientation,
-        age: this.age,
       };
-      return rocketSpecTexture;
+      return asteroidSpecTexture;
     }
 
     function update(canvasWidth, canvasHeight) {
@@ -81,8 +82,16 @@ MyGame.rockets = (function() {
       if (this.age < 100) {
         this.age++;
       }
+
+      if (this.orientation < this.cycle) {
+        this.orientation = this.orientation + this.turnRate;
+      } else {
+        this.orientation = 0;
+      }
+
       return;
     }
+
 
     function impact() {
     }
@@ -91,7 +100,7 @@ MyGame.rockets = (function() {
     }
 
     let api = {
-        getRocketSpec: getRocketSpec,
+        getAsteroidSpec: getAsteroidSpec,
         update: update,
         impact: impact,
         miss: miss,
@@ -149,13 +158,6 @@ MyGame.rockets = (function() {
         configurable: false
     });
 
-    Object.defineProperty(api, 'age', {
-        value: age,
-        writable: true,
-        enumerable: true,
-        configurable: false
-    });
-
     Object.defineProperty(api, 'buffer', {
         value: buffer,
         writable: true,
@@ -163,19 +165,18 @@ MyGame.rockets = (function() {
         configurable: false
     });
 
-
     return api;
   }
 
   let api = {
-      rocketList: rocketList,
-      getRocketsSpecs: getRocketsSpecs,
-      addRocket: addRocket,
-      createRocket: createRocket,
+      asteroidList: asteroidList,
+      getAsteroidSpecs: getAsteroidSpecs,
+      addAsteroid: addAsteroid,
+      createAsteroid: createAsteroid,
   };
 
-  Object.defineProperty(api, 'rocketList', {
-      value: rocketList,
+  Object.defineProperty(api, 'asteroidList', {
+      value: asteroidList,
       writable: true,
       enumerable: true,
       configurable: false

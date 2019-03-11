@@ -1,6 +1,8 @@
 MyGame.ship = (function() {
   'use strict';
-
+  const fireRate = 200;
+  let lastShot = 0;
+  const buffer = 75;
   let width = 75;
   let height = 75;
   let xCoord = 500;
@@ -27,27 +29,27 @@ MyGame.ship = (function() {
 
   function update(canvasWidth, canvasHeight) {
     if (this.xSpeed > 0) {
-      if (this.xCoord + this.xSpeed > canvasWidth + this.width) {
+      if (this.xCoord + this.xSpeed > canvasWidth + this.buffer) {
         this.xCoord = 0;
       } else {
         this.xCoord = this.xCoord + this.xSpeed;
       }
     } else if (this.xSpeed < 0) {
-      if (this.xCoord + this.xSpeed < 0 - this.width) {
-        this.xCoord = canvasWidth + this.width
+      if (this.xCoord + this.xSpeed < 0 - this.buffer) {
+        this.xCoord = canvasWidth + this.buffer
       } else {
         this.xCoord = this.xCoord + this.xSpeed;
       }
     }
     if (this.ySpeed > 0) {
-      if (this.yCoord + this.ySpeed > canvasHeight + this.height) {
+      if (this.yCoord + this.ySpeed > canvasHeight + this.buffer) {
         this.yCoord = 0;
       } else {
         this.yCoord = this.yCoord + this.ySpeed;
       }
     } else if (this.ySpeed < 0) {
-      if (this.yCoord + this.ySpeed < 0 - this.height) {
-        this.yCoord = canvasHeight + this.width
+      if (this.yCoord + this.ySpeed < 0 - this.buffer) {
+        this.yCoord = canvasHeight + this.buffer
       } else {
         this.yCoord = this.yCoord + this.ySpeed;
       }
@@ -82,14 +84,18 @@ MyGame.ship = (function() {
   function hyperspace() {
   }
 
-  function fire() {
-    let rocketParams = {
-      center: {x: this.xCoord, y: this.yCoord},
-      orientation: this.orientation,
-      xSpeed: this.xSpeed,
-      ySpeed: this.ySpeed,
-    };
-    return rocketParams;
+  function fire(elapsedTime) {
+    if (elapsedTime - this.lastShot >= this.fireRate) {
+      this.lastShot = elapsedTime;
+      let rocketParams = {
+        center: {x: this.xCoord, y: this.yCoord},
+        orientation: this.orientation,
+        xSpeed: this.xSpeed,
+        ySpeed: this.ySpeed,
+      };
+      return rocketParams;
+    }
+    return false;
   }
 
   function thrust() {
@@ -186,6 +192,29 @@ MyGame.ship = (function() {
       enumerable: true,
       configurable: false
   });
+
+  Object.defineProperty(api, 'buffer', {
+      value: buffer,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'fireRate', {
+      value: fireRate,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'lastShot', {
+      value: lastShot,
+      writable: true,
+      enumerable: true,
+      configurable: false
+  });
+
+
 
   return api;
 
