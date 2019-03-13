@@ -7,7 +7,7 @@ MyGame.rockets = (function() {
     let newRocketList = [];
     for (let i = 0; i < this.rocketList.length; i++) {
       this.rocketList[i].update(canvasWidth, canvasHeight);
-      if (this.rocketList[i].age * 15 < canvasWidth * .60) {
+      if (this.rocketList[i].age * 15 < canvasWidth * .60 && this.rocketList[i].hit !== true) {
         newRocketList.push(this.rocketList[i]);
       }
     }
@@ -15,7 +15,7 @@ MyGame.rockets = (function() {
 
   }
 
-  function getRocketsSpecs(canvasWidth, canvasHeight) {
+  function getRocketsSpecs() {
     let rocketsSpecs = [];
     for (let i = 0; i < this.rocketList.length; i++) {
       let rocketSpec = this.rocketList[i].getRocketSpec();
@@ -34,10 +34,28 @@ MyGame.rockets = (function() {
         xCoord: this.rocketList[i].xCoord,
         yCoord: this.rocketList[i].yCoord,
         radius: this.rocketList[i].width / 2,
+        hit: this.rocketList[i].hit,
       }
       collisionList.push(rocketCoord);
     }
     return collisionList;
+  }
+
+  function handleCollisions(results) {
+    if (results.length > 0 && this.rocketList.length > 0) {
+      let newRocketList = [];
+      for (let i = 0; i < this.rocketList.length; i++) {
+        if (results[i].hit === true) {
+          if (results[i].xCoord === this.rocketList[i].xCoord && results[i].yCoord === this.rocketList[i].yCoord) {
+            this.rocketList[i].hit = true;
+          }
+        }
+        if (this.rocketList[i].hit !== true) {
+          newRocketList.push(this.rocketList[i]);
+        }
+      }
+      this.rocketList = newRocketList;
+    }
   }
 
   function addRocket(rocket) {
@@ -52,6 +70,7 @@ MyGame.rockets = (function() {
     const buffer = 75;
     let age = 0;
     let gone = false;
+    let hit = false;
 
     let xCoord = params.center.x;
     let yCoord = params.center.y;
@@ -182,6 +201,14 @@ MyGame.rockets = (function() {
         configurable: false
     });
 
+    Object.defineProperty(api, 'hit', {
+        value: hit,
+        writable: true,
+        enumerable: true,
+        configurable: false
+    });
+
+
 
     return api;
   }
@@ -193,6 +220,7 @@ MyGame.rockets = (function() {
       addRocket: addRocket,
       createRocket: createRocket,
       getCollisionList: getCollisionList,
+      handleCollisions: handleCollisions,
   };
 
   Object.defineProperty(api, 'rocketList', {

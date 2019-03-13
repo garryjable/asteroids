@@ -110,13 +110,24 @@ MyGame.graphics = (function() {
 
     function asteroidsTexture(specs) {
         let ready = false;
-        let image = new Image();
+        let imageLarge = new Image();
+        let imageMedium = new Image();
+        let imageSmall = new Image();
         let specList = specs.specList;
 
-        image.onload = function() {
+        imageLarge.onload = function() {
             ready = true;
         };
-        image.src = specs.imageSrc;
+        imageMedium.onload = function() {
+            ready = true;
+        };
+        imageSmall.onload = function() {
+            ready = true;
+        };
+
+        imageLarge.src = specs.imageLargeSrc;
+        imageMedium.src = specs.imageMediumSrc;
+        imageSmall.src = specs.imageSmallSrc;
 
         function draw() {
             if (ready) {
@@ -126,6 +137,14 @@ MyGame.graphics = (function() {
                   context.translate(this.specList[i].center.x, this.specList[i].center.y);
                   context.rotate(this.specList[i].rotation);
                   context.translate(-this.specList[i].center.x, -this.specList[i].center.y);
+                  let image;
+                  if (this.specList[i].size === 3) {
+                    image = imageLarge;
+                  } else if (this.specList[i].size === 2) {
+                    image = imageMedium;
+                  } else if (this.specList[i].size === 1) {
+                    image = imageSmall;
+                  }
 
                   context.drawImage(
                       image,

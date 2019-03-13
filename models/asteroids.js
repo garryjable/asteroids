@@ -3,19 +3,23 @@ MyGame.asteroids = (function() {
 
   let asteroidList = [];
 
-  function update() {
-  }
-
-  function getAsteroidsSpecs(canvasWidth, canvasHeight) {
-    let asteroidsSpecs = [];
+  function update(canvasWidth, canvasHeight) {
     for (let i = 0; i < this.asteroidList.length; i++) {
       this.asteroidList[i].update(canvasWidth, canvasHeight);
+    }
+  }
+
+  function getAsteroidsSpecs() {
+    let asteroidsSpecs = [];
+    for (let i = 0; i < this.asteroidList.length; i++) {
       let asteroidSpec = this.asteroidList[i].getAsteroidSpec();
       asteroidsSpecs.push(asteroidSpec);
     }
     return {
              specList: asteroidsSpecs,
-             imageSrc: 'resources/asteroid-large.png',
+             imageLargeSrc: 'resources/asteroid-large.png',
+             imageMediumSrc: 'resources/asteroid-medium.png',
+             imageSmallSrc: 'resources/asteroid-small.png',
            };
   }
 
@@ -25,11 +29,33 @@ MyGame.asteroids = (function() {
       let asteroidCoord = {
         xCoord: this.asteroidList[i].xCoord,
         yCoord: this.asteroidList[i].yCoord,
-        radius: this.asteroidList[i].width / 2,
+        radius: (this.asteroidList[i].width * this.asteroidList[i].size) / 2,
+        hit: this.asteroidList[i].hit,
       }
       collisionList.push(asteroidCoord);
     }
     return collisionList;
+  }
+
+  function handleCollisions(results) {
+    if (results.length > 0 && this.asteroidList.length > 0) {
+      let newAsteroidList = [];
+      for (let i = 0; i < this.asteroidList.length; i++) {
+        if (results[i].hit === true) {
+          if (results[i].xCoord === this.asteroidList[i].xCoord && results[i].yCoord === this.asteroidList[i].yCoord) {
+            this.asteroidList[i].hit = true;
+            if (this.asteroidList[i].size > 1) {
+              this.asteroidList[i].size--;
+              newAsteroidList.push(this.asteroidList[i]);
+            }
+          }
+        }
+        if (this.asteroidList[i].hit !== true) {
+          newAsteroidList.push(this.asteroidList[i]);
+        }
+      }
+      this.asteroidList = newAsteroidList;
+    }
   }
 
   function spawn(canvasWidth, canvasHeight, level) {
@@ -42,8 +68,8 @@ MyGame.asteroids = (function() {
         let coinFlip = Math.floor(Math.random() * (2));
         let randOrientation = Math.random() * (cycle);
         let randTurnRate = (-cycle + Math.random() * (Math.abs(-cycle) + cycle)) / 360;
-        let randXSpeed = Math.random() * (maxSpeed);
-        let randYSpeed = Math.random() * (maxSpeed);
+        let randXSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
+        let randYSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
         let randYCoord;
         let randXCoord;
         if (coinFlip) {
@@ -73,14 +99,15 @@ MyGame.asteroids = (function() {
   }
 
   function createAsteroid(params) {
-    let width = 40;
-    let height = 40;
+    let width = 50;
+    let height = 50;
 
     let size = 3;
 
     const buffer = 75;
     const cycle = 6.2831853;
     let turnRate = params.turnRate;
+    let hit = false;
 
     let xCoord = params.center.x;
     let yCoord = params.center.y;
@@ -91,9 +118,10 @@ MyGame.asteroids = (function() {
     function getAsteroidSpec() {
       let asteroidSpecTexture = {
         center: {x: this.xCoord, y: this.yCoord},
-        width: width * size,
-        height: height * size,
+        width: this.width * this.size,
+        height: this.height * this.size,
         rotation: this.orientation,
+        size: this.size,
       };
       return asteroidSpecTexture;
     }
@@ -130,6 +158,7 @@ MyGame.asteroids = (function() {
       } else {
         this.orientation = 0;
       }
+      this.hit = false;
 
       return;
     }
@@ -220,15 +249,33 @@ MyGame.asteroids = (function() {
         enumerable: true,
         configurable: false
     });
+
+    Object.defineProperty(api, 'hit', {
+        value: hit,
+        writable: true,
+        enumerable: true,
+        configurable: false
+    });
+
+    Object.defineProperty(api, 'size', {
+        value: size,
+        writable: true,
+        enumerable: true,
+        configurable: false
+    });
+
+
     return api;
   }
 
   let api = {
+      update: update,
       getAsteroidsSpecs: getAsteroidsSpecs,
       addAsteroids: addAsteroids,
       createAsteroid: createAsteroid,
       spawn: spawn,
       getCollisionList: getCollisionList,
+      handleCollisions: handleCollisions,
   };
 
   Object.defineProperty(api, 'asteroidList', {

@@ -7,18 +7,30 @@ MyGame.collisions = (function() {
         let yDistAstShip = Math.abs(ship.yCoord - asteroids[j].yCoord);
         let distanceAstShip = Math.sqrt(xDistAstShip**2 + yDistAstShip**2);
         if (ship.radius + asteroids[j].radius >= distanceAstShip) {
-          console.log("DEAD!");
+          ship.hit = true;
+        } else {
+          ship.hit = false;
         }
         for (let i = 0; i < rockets.length; i++) {
           let xDistAstRoc = Math.abs(rockets[i].xCoord - asteroids[j].xCoord);
           let yDistAstRoc = Math.abs(rockets[i].yCoord - asteroids[j].yCoord);
           let distanceAstRoc = Math.sqrt(xDistAstRoc**2 + yDistAstRoc**2);
           if (rockets[i].radius + asteroids[j].radius >= distanceAstRoc) {
-            console.log("BOOM!");
+            if (rockets[i].hit === false) {
+              asteroids[j].hit = true;
+              rockets[i].hit = true;
+            }
+          } else {
+            rockets[i].hit = false;
+            asteroids[j].hit = false;
           }
         }
       }
-      return;
+      return {
+        rockets: rockets,
+        asteroids: asteroids,
+        ship: ship,
+      };
     }
 
     let api = {

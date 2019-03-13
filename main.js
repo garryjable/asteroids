@@ -72,17 +72,24 @@ MyGame.main = (function(graphics, collisions, ship, rockets, asteroids) {
         asteroids.addAsteroids(asteroidParams);
     }
     rockets.update(graphics.canvas.width, graphics.canvas.height);
-    collisions.checkCollisions(rockets.getCollisionList(), asteroids.getCollisionList(), ship.getCollisionLoc());
+    asteroids.update(graphics.canvas.width, graphics.canvas.height);
+    let results = collisions.checkCollisions(rockets.getCollisionList(), asteroids.getCollisionList(), ship.getCollisionLoc());
+    if (results.asteroids.length === 0) {
+      level++;
+      levelComplete = true;
+    }
+    rockets.handleCollisions(results.rockets);
+    asteroids.handleCollisions(results.asteroids);
     ship.update(graphics.canvas.width, graphics.canvas.height);
   }
 
   function render() {
     graphics.clear();
     graphics.refresh();
-    rocketsSpecs = rockets.getRocketsSpecs(graphics.canvas.width, graphics.canvas.height);
+    rocketsSpecs = rockets.getRocketsSpecs();
     rocketsTexture.renderRockets(rocketsSpecs);
     rocketsTexture.draw();
-    asteroidsSpecs = asteroids.getAsteroidsSpecs(graphics.canvas.width, graphics.canvas.height);
+    asteroidsSpecs = asteroids.getAsteroidsSpecs();
     asteroidsTexture.renderAsteroids(asteroidsSpecs);
     asteroidsTexture.draw();
     shipSpec = ship.getShipSpec();
