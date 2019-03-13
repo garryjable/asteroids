@@ -63,8 +63,8 @@ MyGame.rockets = (function() {
   }
 
   function createRocket(params) {
-    let width = 20;
-    let height = 20;
+    let width = 25;
+    let height = 25;
 
     const rocketSpeed = 15;
     const buffer = 50;

@@ -1,4 +1,4 @@
-MyGame.asteroids = (function() {
+MyGame.asteroids = (function(audio) {
   'use strict';
 
   let asteroidList = [];
@@ -43,6 +43,7 @@ MyGame.asteroids = (function() {
       for (let i = 0; i < this.asteroidList.length; i++) {
         if (results[i].hit === true) {
           if (results[i].xCoord === this.asteroidList[i].xCoord && results[i].yCoord === this.asteroidList[i].yCoord) {
+            audio.playSound('resources/asteroid-break');
             this.asteroidList[i].hit = true;
             const buffer = 50;
             const cycle = 6.2831853;
@@ -137,7 +138,7 @@ MyGame.asteroids = (function() {
 
     let size = params.size;
 
-    const buffer = 75;
+    const buffer = 50;
     const cycle = 6.2831853;
     let turnRate = params.turnRate;
     let hit = false;
@@ -320,4 +321,4 @@ MyGame.asteroids = (function() {
 
   return api;
 
-}());
+}(MyGame.audio));

@@ -7,7 +7,7 @@ MyGame.saucer = (function() {
     let newSaucerList = [];
     for (let i = 0; i < this.saucerList.length; i++) {
       this.saucerList[i].update(canvasWidth, canvasHeight);
-      if (this.saucerList[i].age * 15 < canvasWidth * .60 && this.saucerList[i].hit !== true) {
+      if (this.saucerList[i].hit !== true) {
         newSaucerList.push(this.saucerList[i]);
       }
     }
@@ -91,10 +91,9 @@ MyGame.saucer = (function() {
   }
 
   function createSaucer(params) {
-    let width = 20;
-    let height = 20;
+    let width = 100;
+    let height = 100;
 
-    const saucerSpeed = 15;
     const buffer = 50;
     let age = 0;
     let hit = false;
@@ -102,8 +101,8 @@ MyGame.saucer = (function() {
     let xCoord = params.center.x;
     let yCoord = params.center.y;
     let orientation = params.orientation;
-    let xSpeed = params.xSpeed + saucerSpeed * Math.sin(params.orientation);
-    let ySpeed = params.ySpeed - saucerSpeed * Math.cos(params.orientation);
+    let xSpeed = params.xSpeed;
+    let ySpeed = params.ySpeed;
 
     function getSaucerSpec() {
       let saucerSpecTexture = {

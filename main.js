@@ -1,9 +1,10 @@
 MyGame.main = (function(graphics, collisions, ship, rockets, asteroids, saucer, audio) {
+  audio.playSound('resources/comptroller-crossover-dragon');
   var currentScore = 0;
   var highScores = [];
   var lastMoveStamp = 0;
   var gameOver = false;
-  var moveRate = 10;
+  var moveRate = 17;
   var level = 1;
   var levelComplete = true;
 

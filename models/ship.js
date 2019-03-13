@@ -1,4 +1,4 @@
-MyGame.ship = (function() {
+MyGame.ship = (function(audio, collisions) {
   'use strict';
   const fireRate = 200;
   let lastShot = 0;
@@ -11,8 +11,6 @@ MyGame.ship = (function() {
   let xSpeed = 0;
   let ySpeed = 0;
   let acceleration = .3;
-//  let turnRate = .174533;
-//  let turnRate = .13089975;
   let turnRate = .1;
   let cycle = 6.2831853;
   let thrusting = false;
@@ -66,7 +64,10 @@ MyGame.ship = (function() {
       }
     }
     if (this.thrusting) {
+      audio.playSound('resources/thruster');
       this.thrust();
+    } else {
+      audio.pauseSound('resources/thruster');
     }
     if (this.turning > 0 ) {
       this.turnClockwise();
@@ -96,6 +97,7 @@ MyGame.ship = (function() {
   }
 
   function fire(elapsedTime) {
+    audio.playSound('resources/rocket');
     if (elapsedTime - this.lastShot >= this.fireRate) {
       this.lastShot = elapsedTime;
       let rocketParams = {
@@ -228,4 +230,4 @@ MyGame.ship = (function() {
 
   return api;
 
-}());
+}(MyGame.audio, MyGame.collisions));

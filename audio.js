@@ -56,7 +56,7 @@ MyGame.audio = (function() {
     //
     //------------------------------------------------------------------
     function playSound(whichSound) {
-        sounds[whichSound].play();
+      sounds[whichSound].play();
     }
 
     function playFireSound() {

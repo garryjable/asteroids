@@ -1,7 +1,9 @@
-MyGame.menuManager = (function() {
+MyGame.menuManager = (function(audio) {
   'use strict';
 
   function newGame() {
+    audio.pauseSound('resources/comptroller-crossover-dragon');
+    audio.playSound('resources/hyperspace');
     let title = document.getElementById('title');
     title.style.display = 'none';
     let gameScreen = document.getElementById('gameScreen-wrapper');
@@ -40,14 +42,19 @@ MyGame.menuManager = (function() {
     highScores.style.display = 'none';
   }
 
+  function mouseOver() {
+    audio.playSound('resources/menu-beep');
+  }
+
   let api = {
     newGame: newGame,
     showHighScores: showHighScores,
     showControls: showControls,
     showCredits: showCredits,
     showMenu: showMenu,
+    mouseOver: mouseOver,
   };
 
   return api;
 
-}());
+}(MyGame.audio));
