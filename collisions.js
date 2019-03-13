@@ -16,14 +16,9 @@ MyGame.collisions = (function() {
           let yDistAstRoc = Math.abs(rockets[i].yCoord - asteroids[j].yCoord);
           let distanceAstRoc = Math.sqrt(xDistAstRoc**2 + yDistAstRoc**2);
           if (rockets[i].radius + asteroids[j].radius >= distanceAstRoc) {
-            if (rockets[i].hit === false) {
-              asteroids[j].hit = true;
-              rockets[i].hit = true;
-            }
-          } else {
-            rockets[i].hit = false;
-            asteroids[j].hit = false;
-          }
+            asteroids[j].hit = true;
+            rockets[i].hit = true;
+          } 
         }
       }
       return {

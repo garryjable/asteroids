@@ -62,8 +62,8 @@ canvas {
 }
 .canvas {
   
-  width: 100vh;
-  height: 100vh;
+  width: 95vh;
+  height: 95vh;
 }
 .gameScreen {
     background-image: url("resources/background.png");

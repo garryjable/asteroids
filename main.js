@@ -1,4 +1,4 @@
-MyGame.main = (function(graphics, collisions, ship, rockets, asteroids) {
+MyGame.main = (function(graphics, collisions, ship, rockets, asteroids, saucer, audio) {
   var currentScore = 0;
   var highScores = [];
   var lastMoveStamp = 0;
@@ -19,6 +19,11 @@ MyGame.main = (function(graphics, collisions, ship, rockets, asteroids) {
   var asteroidsSpecs = asteroids.getAsteroidsSpecs()
   var asteroidsTexture = graphics.asteroidsTexture(asteroidsSpecs);
 
+  var saucerSpecs = saucer.getSaucersSpecs()
+  var saucerTexture = graphics.saucerTexture(saucerSpecs);
+
+
+
   performance.now();
   requestAnimationFrame(gameLoop);
 
@@ -36,7 +41,6 @@ MyGame.main = (function(graphics, collisions, ship, rockets, asteroids) {
 
 
   function processInput(elapsedTime) {
-    //nextInput = input.pop();
     nextInput = input.filter(onlyUnique);
     input = []
   }
@@ -68,10 +72,15 @@ MyGame.main = (function(graphics, collisions, ship, rockets, asteroids) {
     }
     if (levelComplete === true) {
         levelComplete = false;
-        let asteroidParams = asteroids.spawn(graphics.canvas.width, graphics.canvas.height, level);
+        let asteroidParams = asteroids.spawn(graphics.canvas.width, graphics.canvas.height, level, 3);
         asteroids.addAsteroids(asteroidParams);
+
+        let saucerParams = saucer.spawn(graphics.canvas.width, graphics.canvas.height, level);
+        let newSaucer = saucer.createSaucer(saucerParams);
+        saucer.addSaucer(newSaucer);
     }
     rockets.update(graphics.canvas.width, graphics.canvas.height);
+    saucer.update(graphics.canvas.width, graphics.canvas.height);
     asteroids.update(graphics.canvas.width, graphics.canvas.height);
     let results = collisions.checkCollisions(rockets.getCollisionList(), asteroids.getCollisionList(), ship.getCollisionLoc());
     if (results.asteroids.length === 0) {
@@ -89,6 +98,9 @@ MyGame.main = (function(graphics, collisions, ship, rockets, asteroids) {
     rocketsSpecs = rockets.getRocketsSpecs();
     rocketsTexture.renderRockets(rocketsSpecs);
     rocketsTexture.draw();
+    saucerSpecs = saucer.getSaucersSpecs();
+    saucerTexture.renderSaucer(saucerSpecs);
+    saucerTexture.draw();
     asteroidsSpecs = asteroids.getAsteroidsSpecs();
     asteroidsTexture.renderAsteroids(asteroidsSpecs);
     asteroidsTexture.draw();
@@ -129,4 +141,4 @@ MyGame.main = (function(graphics, collisions, ship, rockets, asteroids) {
   document.onkeydown = startInput;
   document.onkeyup = stopInput;
 
-}(MyGame.graphics, MyGame.collisions, MyGame.ship, MyGame.rockets, MyGame.asteroids));
+}(MyGame.graphics, MyGame.collisions, MyGame.ship, MyGame.rockets, MyGame.asteroids, MyGame.saucer, MyGame.audio));

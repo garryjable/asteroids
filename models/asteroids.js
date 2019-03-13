@@ -29,7 +29,7 @@ MyGame.asteroids = (function() {
       let asteroidCoord = {
         xCoord: this.asteroidList[i].xCoord,
         yCoord: this.asteroidList[i].yCoord,
-        radius: (this.asteroidList[i].width * this.asteroidList[i].size) / 2,
+        radius: (this.asteroidList[i].width * this.asteroidList[i].size) / 3,
         hit: this.asteroidList[i].hit,
       }
       collisionList.push(asteroidCoord);
@@ -44,9 +44,41 @@ MyGame.asteroids = (function() {
         if (results[i].hit === true) {
           if (results[i].xCoord === this.asteroidList[i].xCoord && results[i].yCoord === this.asteroidList[i].yCoord) {
             this.asteroidList[i].hit = true;
-            if (this.asteroidList[i].size > 1) {
-              this.asteroidList[i].size--;
-              newAsteroidList.push(this.asteroidList[i]);
+            const buffer = 50;
+            const cycle = 6.2831853;
+            const maxSpeed = 2;
+            if (this.asteroidList[i].size === 3) {
+              for (let j = 0; j < 4; j++) {
+                let randOrientation = Math.random() * (cycle);
+                let randTurnRate = (-cycle + Math.random() * (Math.abs(-cycle) + cycle)) / 360;
+                let randXSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
+                let randYSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
+                let asteroidParams = {
+                  center: {x: this.asteroidList[i].xCoord, y: this.asteroidList[i].yCoord},
+                  orientation: randOrientation,
+                  turnRate: randTurnRate,
+                  xSpeed: randXSpeed,
+                  ySpeed: randYSpeed,
+                  size: 2,
+                };
+                newAsteroidList.push(this.createAsteroid(asteroidParams));
+              }
+            } else if (this.asteroidList[i].size === 2) {
+              for (let j = 0; j < 3; j++) {
+                let randOrientation = Math.random() * (cycle);
+                let randTurnRate = (-cycle + Math.random() * (Math.abs(-cycle) + cycle)) / 360;
+                let randXSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
+                let randYSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
+                let asteroidParams = {
+                  center: {x: this.asteroidList[i].xCoord, y: this.asteroidList[i].yCoord},
+                  orientation: randOrientation,
+                  turnRate: randTurnRate,
+                  xSpeed: randXSpeed,
+                  ySpeed: randYSpeed,
+                  size: 1,
+                };
+                newAsteroidList.push(this.createAsteroid(asteroidParams));
+              }
             }
           }
         }
@@ -58,8 +90,8 @@ MyGame.asteroids = (function() {
     }
   }
 
-  function spawn(canvasWidth, canvasHeight, level) {
-    const buffer = 75;
+  function spawn(canvasWidth, canvasHeight, level, size) {
+    const buffer = 50;
     const cycle = 6.2831853;
     let paramList = [];
     let maxSpeed = 2;
@@ -85,6 +117,7 @@ MyGame.asteroids = (function() {
           turnRate: randTurnRate,
           xSpeed: randXSpeed,
           ySpeed: randYSpeed,
+          size: size,
         };
         paramList.push(asteroidParams);
       }
@@ -102,7 +135,7 @@ MyGame.asteroids = (function() {
     let width = 50;
     let height = 50;
 
-    let size = 3;
+    let size = params.size;
 
     const buffer = 75;
     const cycle = 6.2831853;

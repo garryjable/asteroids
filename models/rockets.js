@@ -33,7 +33,7 @@ MyGame.rockets = (function() {
       let rocketCoord = {
         xCoord: this.rocketList[i].xCoord,
         yCoord: this.rocketList[i].yCoord,
-        radius: this.rocketList[i].width / 2,
+        radius: this.rocketList[i].width / 3,
         hit: this.rocketList[i].hit,
       }
       collisionList.push(rocketCoord);
@@ -67,9 +67,8 @@ MyGame.rockets = (function() {
     let height = 20;
 
     const rocketSpeed = 15;
-    const buffer = 75;
+    const buffer = 50;
     let age = 0;
-    let gone = false;
     let hit = false;
 
     let xCoord = params.center.x;

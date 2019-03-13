@@ -2,7 +2,7 @@ MyGame.ship = (function() {
   'use strict';
   const fireRate = 200;
   let lastShot = 0;
-  const buffer = 75;
+  const buffer = 50;
   let width = 75;
   let height = 75;
   let xCoord = 500;
@@ -225,8 +225,6 @@ MyGame.ship = (function() {
       enumerable: true,
       configurable: false
   });
-
-
 
   return api;
 
