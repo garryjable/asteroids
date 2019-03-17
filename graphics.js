@@ -3,6 +3,8 @@ MyGame.graphics = (function() {
 
     let canvas = document.getElementById('canvas');
     let context = canvas.getContext('2d');
+    const buffer = 50;
+    const cycle = 6.2831853;
 
     function clear() {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -104,11 +106,10 @@ MyGame.graphics = (function() {
            configurable: false
        });
 
-
-        return api;
+       return api;
     }
 
-    function saucerTexture(specs) {
+    function saucersTexture(specs) {
         let ready = false;
         let image = new Image();
         let specList = specs.specList;
@@ -231,18 +232,88 @@ MyGame.graphics = (function() {
            configurable: false
        });
 
-
         return api;
     }
 
+    function particlesTexture(specs) {
+        let ready = false;
+        let imageExplode = new Image();
+        let imageThrust = new Image();
+        let imageHyperspace = new Image();
+        let specList = specs.specList;
 
+        imageExplode.onload = function() {
+            ready = true;
+        };
+        imageThrust.onload = function() {
+            ready = true;
+        };
+        imageHyperspace.onload = function() {
+            ready = true;
+        };
+
+        imageExplode.src = specs.imageExplodeSrc;
+        imageThrust.src = specs.imageThrustSrc;
+        imageHyperspace.src = specs.imageHyperspaceSrc;
+
+        function draw() {
+            if (ready) {
+                for (let i = 0; i < this.specList.length; i++) {
+                  context.save();
+
+                  context.translate(this.specList[i].center.x, this.specList[i].center.y);
+                  context.rotate(this.specList[i].rotation);
+                  context.translate(-this.specList[i].center.x, -this.specList[i].center.y);
+                  let image;
+                  if (this.specList[i].size === 3) {
+                    image = imageLarge;
+                  } else if (this.specList[i].size === 2) {
+                    image = imageMedium;
+                  } else if (this.specList[i].size === 1) {
+                    image = imageSmall;
+                  }
+
+                  context.drawImage(
+                      image,
+                      this.specList[i].center.x - this.specList[i].width / 2,
+                      this.specList[i].center.y - this.specList[i].height / 2,
+                      this.specList[i].width, this.specList[i].height);
+
+                  context.restore();
+                }
+            }
+        }
+
+        function renderParticles(newSpecs) {
+          this.specList = [];
+          for (let i = 0; i < newSpecs.specList.length; i++) {
+           this.specList.push(newSpecs.specList[i]);
+          }
+        }
+
+        let api = {
+            draw: draw,
+            renderParticles: renderParticles,
+            specList: specList,
+        };
+
+        Object.defineProperty(api, 'specList', {
+           value: specList,
+           writable: true,
+           enumerable: true,
+           configurable: false
+        });
+
+        return api;
+    }
 
     let api = {
         clear: clear,
         shipTexture: shipTexture,
         rocketsTexture: rocketsTexture,
-        saucerTexture: saucerTexture,
+        saucersTexture: saucersTexture,
         asteroidsTexture: asteroidsTexture,
+        particlesTexture: particlesTexture,
         refresh: refresh
     };
 
@@ -255,6 +326,20 @@ MyGame.graphics = (function() {
 
     Object.defineProperty(api, 'canvas', {
         value: canvas,
+        writable: false,
+        enumerable: true,
+        configurable: false
+    });
+
+    Object.defineProperty(api, 'buffer', {
+        value: buffer,
+        writable: false,
+        enumerable: true,
+        configurable: false
+    });
+
+    Object.defineProperty(api, 'cycle', {
+        value: cycle,
         writable: false,
         enumerable: true,
         configurable: false

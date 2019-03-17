@@ -1,13 +1,13 @@
-MyGame.rockets = (function() {
+MyGame.rockets = (function(graphics) {
   'use strict';
 
   let rocketList = [];
 
-  function update(canvasWidth, canvasHeight) {
+  function update() {
     let newRocketList = [];
     for (let i = 0; i < this.rocketList.length; i++) {
-      this.rocketList[i].update(canvasWidth, canvasHeight);
-      if (this.rocketList[i].age * 15 < canvasWidth * .60 && this.rocketList[i].hit !== true) {
+      this.rocketList[i].update(graphics.canvas.width, graphics.canvas.height);
+      if (this.rocketList[i].age * 15 < graphics.canvas.width * .60 && this.rocketList[i].hit !== true) {
         newRocketList.push(this.rocketList[i]);
       }
     }
@@ -66,8 +66,7 @@ MyGame.rockets = (function() {
     let width = 25;
     let height = 25;
 
-    const rocketSpeed = 15;
-    const buffer = 50;
+    const rocketSpeed = 30;
     let age = 0;
     let hit = false;
 
@@ -88,29 +87,29 @@ MyGame.rockets = (function() {
       return rocketSpecTexture;
     }
 
-    function update(canvasWidth, canvasHeight) {
+    function update() {
       if (this.xSpeed > 0) {
-        if (this.xCoord + this.xSpeed > canvasWidth + this.buffer) {
+        if (this.xCoord + this.xSpeed > graphics.canvas.width + graphics.buffer) {
           this.xCoord = 0;
         } else {
           this.xCoord = this.xCoord + this.xSpeed;
         }
       } else if (this.xSpeed < 0) {
-        if (this.xCoord + this.xSpeed < 0 - this.buffer) {
-          this.xCoord = canvasWidth + this.buffer
+        if (this.xCoord + this.xSpeed < 0 - graphics.buffer) {
+          this.xCoord = graphics.canvas.width + graphics.buffer
         } else {
           this.xCoord = this.xCoord + this.xSpeed;
         }
       }
       if (this.ySpeed > 0) {
-        if (this.yCoord + this.ySpeed > canvasHeight + this.buffer) {
+        if (this.yCoord + this.ySpeed > graphics.canvas.height + graphics.buffer) {
           this.yCoord = 0;
         } else {
           this.yCoord = this.yCoord + this.ySpeed;
         }
       } else if (this.ySpeed < 0) {
-        if (this.yCoord + this.ySpeed < 0 - this.buffer) {
-          this.yCoord = canvasHeight + this.buffer
+        if (this.yCoord + this.ySpeed < 0 - graphics.buffer) {
+          this.yCoord = graphics.canvas.height + graphics.buffer
         } else {
           this.yCoord = this.yCoord + this.ySpeed;
         }
@@ -193,13 +192,6 @@ MyGame.rockets = (function() {
         configurable: false
     });
 
-    Object.defineProperty(api, 'buffer', {
-        value: buffer,
-        writable: true,
-        enumerable: true,
-        configurable: false
-    });
-
     Object.defineProperty(api, 'hit', {
         value: hit,
         writable: true,
@@ -231,4 +223,4 @@ MyGame.rockets = (function() {
 
   return api;
 
-}());
+}(MyGame.graphics));

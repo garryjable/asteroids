@@ -1,7 +1,7 @@
 MyGame.collisions = (function() {
     'use strict';
 
-    function checkCollisions(rockets, asteroids, ship) {
+    function checkCollisions(rockets, asteroids, ship, saucers) {
       for (let j = 0; j < asteroids.length; j++) {
         let xDistAstShip = Math.abs(ship.xCoord - asteroids[j].xCoord);
         let yDistAstShip = Math.abs(ship.yCoord - asteroids[j].yCoord);
@@ -19,11 +19,21 @@ MyGame.collisions = (function() {
             asteroids[j].hit = true;
             rockets[i].hit = true;
           } 
+        for (let k = 0; k < saucers.length; k++) {
+          let xDistSauRoc = Math.abs(rockets[i].xCoord - saucers[k].xCoord);
+          let yDistSauRoc = Math.abs(rockets[i].yCoord - saucers[k].yCoord);
+          let distanceSauRoc = Math.sqrt(xDistSauRoc**2 + yDistSauRoc**2);
+          if (rockets[i].radius + saucers[k].radius >= distanceSauRoc) {
+            saucers[k].hit = true;
+            rockets[i].hit = true;
+          }
+        }
         }
       }
       return {
         rockets: rockets,
         asteroids: asteroids,
+        saucers: saucers,
         ship: ship,
       };
     }

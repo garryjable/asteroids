@@ -1,11 +1,11 @@
-MyGame.asteroids = (function(audio) {
+MyGame.asteroids = (function(audio, graphics) {
   'use strict';
 
   let asteroidList = [];
 
-  function update(canvasWidth, canvasHeight) {
+  function update() {
     for (let i = 0; i < this.asteroidList.length; i++) {
-      this.asteroidList[i].update(canvasWidth, canvasHeight);
+      this.asteroidList[i].update();
     }
   }
 
@@ -45,13 +45,11 @@ MyGame.asteroids = (function(audio) {
           if (results[i].xCoord === this.asteroidList[i].xCoord && results[i].yCoord === this.asteroidList[i].yCoord) {
             audio.playSound('resources/asteroid-break');
             this.asteroidList[i].hit = true;
-            const buffer = 50;
-            const cycle = 6.2831853;
-            const maxSpeed = 2;
+            const maxSpeed = 6;
             if (this.asteroidList[i].size === 3) {
               for (let j = 0; j < 4; j++) {
-                let randOrientation = Math.random() * (cycle);
-                let randTurnRate = (-cycle + Math.random() * (Math.abs(-cycle) + cycle)) / 360;
+                let randOrientation = Math.random() * (graphics.cycle);
+                let randTurnRate = (-graphics.cycle + Math.random() * (Math.abs(-graphics.cycle) + graphics.cycle)) / 360;
                 let randXSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
                 let randYSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
                 let asteroidParams = {
@@ -66,8 +64,8 @@ MyGame.asteroids = (function(audio) {
               }
             } else if (this.asteroidList[i].size === 2) {
               for (let j = 0; j < 3; j++) {
-                let randOrientation = Math.random() * (cycle);
-                let randTurnRate = (-cycle + Math.random() * (Math.abs(-cycle) + cycle)) / 360;
+                let randOrientation = Math.random() * (graphics.cycle);
+                let randTurnRate = (-graphics.cycle + Math.random() * (Math.abs(-graphics.cycle) + graphics.cycle)) / 360;
                 let randXSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
                 let randYSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
                 let asteroidParams = {
@@ -91,26 +89,24 @@ MyGame.asteroids = (function(audio) {
     }
   }
 
-  function spawn(canvasWidth, canvasHeight, level, size) {
-    const buffer = 50;
-    const cycle = 6.2831853;
+  function spawn(level, size) {
     let paramList = [];
-    let maxSpeed = 2;
+    let maxSpeed = 6;
       for (let i = 0; i < level; i++) {
         let asteroidParams;
         let coinFlip = Math.floor(Math.random() * (2));
-        let randOrientation = Math.random() * (cycle);
-        let randTurnRate = (-cycle + Math.random() * (Math.abs(-cycle) + cycle)) / 360;
+        let randOrientation = Math.random() * (graphics.cycle);
+        let randTurnRate = (-graphics.cycle + Math.random() * (Math.abs(-graphics.cycle) + graphics.cycle)) / 360;
         let randXSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
         let randYSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
         let randYCoord;
         let randXCoord;
         if (coinFlip) {
-          randYCoord = Math.floor(Math.random() * (canvasHeight + 1));
-          randXCoord = canvasWidth + (buffer / 2);
+          randYCoord = Math.floor(Math.random() * (graphics.canvas.height + 1));
+          randXCoord = graphics.canvas.width + (graphics.buffer / 2);
         } else {
-          randXCoord = Math.floor(Math.random() * (canvasWidth + 1));
-          randYCoord = canvasHeight + (buffer / 2);
+          randXCoord = Math.floor(Math.random() * (graphics.canvas.width + 1));
+          randYCoord = graphics.canvas.height + (graphics.buffer / 2);
         }
         asteroidParams = {
           center: {x: randXCoord, y: randYCoord},
@@ -138,8 +134,6 @@ MyGame.asteroids = (function(audio) {
 
     let size = params.size;
 
-    const buffer = 50;
-    const cycle = 6.2831853;
     let turnRate = params.turnRate;
     let hit = false;
 
@@ -160,34 +154,34 @@ MyGame.asteroids = (function(audio) {
       return asteroidSpecTexture;
     }
 
-    function update(canvasWidth, canvasHeight) {
+    function update() {
       if (this.xSpeed > 0) {
-        if (this.xCoord + this.xSpeed > canvasWidth + this.buffer) {
+        if (this.xCoord + this.xSpeed > graphics.canvas.width + graphics.buffer) {
           this.xCoord = 0;
         } else {
           this.xCoord = this.xCoord + this.xSpeed;
         }
       } else if (this.xSpeed < 0) {
-        if (this.xCoord + this.xSpeed < 0 - this.buffer) {
-          this.xCoord = canvasWidth + this.buffer
+        if (this.xCoord + this.xSpeed < 0 - graphics.buffer) {
+          this.xCoord = graphics.canvas.width + graphics.buffer
         } else {
           this.xCoord = this.xCoord + this.xSpeed;
         }
       }
       if (this.ySpeed > 0) {
-        if (this.yCoord + this.ySpeed > canvasHeight + this.buffer) {
+        if (this.yCoord + this.ySpeed > graphics.canvas.height + graphics.buffer) {
           this.yCoord = 0;
         } else {
           this.yCoord = this.yCoord + this.ySpeed;
         }
       } else if (this.ySpeed < 0) {
-        if (this.yCoord + this.ySpeed < 0 - this.buffer) {
-          this.yCoord = canvasHeight + this.buffer
+        if (this.yCoord + this.ySpeed < 0 - graphics.buffer) {
+          this.yCoord = graphics.canvas.height + graphics.buffer
         } else {
           this.yCoord = this.yCoord + this.ySpeed;
         }
       }
-      if (this.orientation < this.cycle) {
+      if (this.orientation < graphics.cycle) {
         this.orientation = this.orientation + this.turnRate;
       } else {
         this.orientation = 0;
@@ -263,20 +257,6 @@ MyGame.asteroids = (function(audio) {
         configurable: false
     });
 
-    Object.defineProperty(api, 'buffer', {
-        value: buffer,
-        writable: true,
-        enumerable: true,
-        configurable: false
-    });
-
-    Object.defineProperty(api, 'cycle', {
-        value: cycle,
-        writable: false,
-        enumerable: true,
-        configurable: false
-    });
-
     Object.defineProperty(api, 'turnRate', {
         value: turnRate,
         writable: false,
@@ -321,4 +301,4 @@ MyGame.asteroids = (function(audio) {
 
   return api;
 
-}(MyGame.audio));
+}(MyGame.audio, MyGame.graphics));

@@ -2,7 +2,7 @@ MyGame.menuManager = (function(audio) {
   'use strict';
 
   function newGame() {
-    audio.pauseSound('resources/comptroller-crossover-dragon');
+    //audio.pauseSound('resources/comptroller-crossover-dragon');
     audio.playSound('resources/hyperspace');
     let title = document.getElementById('title');
     title.style.display = 'none';
