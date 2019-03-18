@@ -23,22 +23,28 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroid
   var saucersSpecs = saucers.getSaucersSpecs()
   var saucersTexture = graphics.saucersTexture(saucersSpecs);
 
-  debugger;
-  let particlesLaser = particles.create({
+  let particlesLaser = particles.init({
       center: { x: 300, y: 300 },
       size: { mean: 15, stdev: 5 },
       speed: { mean: 65, stdev: 35 },
       lifetime: { mean: 4, stdev: 1}
   });
-  let particlesLaser2 = particles.create({
-      center: { x: 300, y: 300 },
-      size: { mean: 12, stdev: 3 },
-      speed: { mean: 65, stdev: 35 },
-      lifetime: { mean: 4, stdev: 1}
-  });
+
+//  let particlesLaser = particles.create({
+//      center: { x: 300, y: 300 },
+//      size: { mean: 15, stdev: 5 },
+//      speed: { mean: 65, stdev: 35 },
+//      lifetime: { mean: 4, stdev: 1}
+//  });
+//  let particlesLaser2 = particles.create({
+//      center: { x: 300, y: 300 },
+//      size: { mean: 12, stdev: 3 },
+//      speed: { mean: 65, stdev: 35 },
+//      lifetime: { mean: 4, stdev: 1}
+//  });
 
   particlesSpecs = {
-    specList: [particlesLaser, particlesLaser2],
+    specList: [particlesLaser],
     imageExplodeSrc: 'assets/laser.png',
     imageThrustSrc: 'assets/laser.png',
     imageHyperspaceSrc: 'assets/laser.png',
