@@ -136,14 +136,13 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroid
     asteroidsSpecs = asteroids.getAsteroidsSpecs();
     asteroidsTexture.renderAsteroids(asteroidsSpecs);
     asteroidsTexture.draw();
-    //particlesSpecs = particles.getParticlesSpecs();
-    //particlesTexture.renderParticles(particlesSpecs);
-    //particlesTexture.draw();
+    particlesSpecs = particles.getParticlesSpecs();
+    particlesTexture.renderParticles(particlesSpecs);
+    particlesTexture.draw();
     shipSpec = ship.getShipSpec();
     shipTexture.renderShip(shipSpec);
     shipTexture.draw();
   }
-
 
   function startInput (e) {
     e = e || window.event;
@@ -159,8 +158,6 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroid
       input.push('fire');
     }
   }
-
-
 
   function stopInput (e) {
     e = e || window.event;

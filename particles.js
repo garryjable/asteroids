@@ -8,7 +8,6 @@ MyGame.particles = (function (random) {
     }
 
     function create() {
-        debugger;
         let size = random.nextGaussian(this.spec.size.mean, this.spec.size.stdev);
         let particle = {
             center: { x: this.spec.center.x, y: this.spec.center.y },
@@ -19,19 +18,24 @@ MyGame.particles = (function (random) {
             lifetime: random.nextGaussian(this.spec.lifetime.mean, this.spec.lifetime.stdev), // seconds
             alive: 0
         };
-        particleList.push(particle);
+        particleList[nextName++] = particle;
         return particle;
     }
 
     function getParticlesSpecs() {
       let particlesSpecs = [];
-      for (let i = 0; i < this.particleList.length; i++) {
-        let particleSpecs = this.particleList[i].getparticleSpec();
+      for (let particle in this.particleList) {
+        let particleSpecs =  {
+        center: {x: this.particleList[particle].center.x, y: this.particleList[particle].center.y},
+        width: 10,
+        height: 10,
+        rotation: particle.rotation,
+      };
         particlesSpecs.push(particleSpecs);
       }
       return {
-               specList: rocketsSpecs,
-               imageSrc: 'resources/rocket.png',
+               specList: particlesSpecs,
+               imageSrc: 'resources/laser.png',
              };
     }
 
@@ -70,13 +74,14 @@ MyGame.particles = (function (random) {
         height: height,
         rotation: this.orientation,
       };
-      return rocketSpecTexture;
+      return particleSpecTexture;
     }
 
     let api = {
         update: update,
         init: init,
         create: create,
+        getParticlesSpecs: getParticlesSpecs,
         get particleList() { return particleList; }
     };
 

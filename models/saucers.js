@@ -150,7 +150,19 @@ MyGame.saucers = (function(audio, ship, graphics) {
     function impact() {
     }
 
-    function fire() {
+    function fire(elapsedTime) {
+      audio.playSound('resources/laser');
+      if (elapsedTime - this.lastShot >= this.fireRate) {
+        this.lastShot = elapsedTime;
+        let rocketParams = {
+          center: {x: this.xCoord, y: this.yCoord},
+          orientation: Math.random() * (graphics.cycle),
+          xSpeed: 0,
+          ySpeed: 0,
+        };
+        return rocketParams;
+      }
+      return false;
     }
 
     function miss() {
