@@ -14,6 +14,17 @@ MyGame.saucers = (function(audio, ship, graphics) {
     this.saucersList = newSaucerList;
   }
 
+  function fire(elapsedTime) {
+    let lasersSpecs = [];
+    for (let i = 0; i < this.saucersList.length; i++) {
+      let laserSpec = this.saucersList[i].fire(elapsedTime);
+      if (laserSpec) {
+        lasersSpecs.push(laserSpec);
+      }
+    }
+    return lasersSpecs;
+  }
+
   function getSaucersSpecs() {
     let saucerssSpecs = [];
     for (let i = 0; i < this.saucersList.length; i++) {
@@ -93,6 +104,8 @@ MyGame.saucers = (function(audio, ship, graphics) {
   function createSaucer(params) {
     let width = 100;
     let height = 100;
+    const fireRate = 200;
+    let lastShot = 0;
 
     let age = 0;
     let hit = false;
@@ -154,13 +167,13 @@ MyGame.saucers = (function(audio, ship, graphics) {
       audio.playSound('resources/laser');
       if (elapsedTime - this.lastShot >= this.fireRate) {
         this.lastShot = elapsedTime;
-        let rocketParams = {
+        let laserParams = {
           center: {x: this.xCoord, y: this.yCoord},
           orientation: Math.random() * (graphics.cycle),
           xSpeed: 0,
           ySpeed: 0,
         };
-        return rocketParams;
+        return laserParams;
       }
       return false;
     }
@@ -170,6 +183,7 @@ MyGame.saucers = (function(audio, ship, graphics) {
 
     let api = {
         getSaucerSpec: getSaucerSpec,
+        fire: fire,
         update: update,
         impact: impact,
         miss: miss,
@@ -245,6 +259,7 @@ MyGame.saucers = (function(audio, ship, graphics) {
       saucersList: saucersList,
       getSaucersSpecs: getSaucersSpecs,
       spawn: spawn,
+      fire: fire,
       update: update,
       addSaucer: addSaucer,
       createSaucer: createSaucer,

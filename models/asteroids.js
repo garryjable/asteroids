@@ -96,7 +96,7 @@ MyGame.asteroids = (function(audio, graphics) {
         let asteroidParams;
         let coinFlip = Math.floor(Math.random() * (2));
         let randOrientation = Math.random() * (graphics.cycle);
-        let randTurnRate = (-graphics.cycle + Math.random() * (Math.abs(-graphics.cycle) + graphics.cycle)) / 360;
+        let randTurnRate = (-graphics.cycle + Math.random() * (Math.abs(-graphics.cycle) + graphics.cycle)) / 180AKG K1000AKG K1000;
         let randXSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
         let randYSpeed = (-maxSpeed + Math.random() * (Math.abs(-maxSpeed) + maxSpeed));
         let randYCoord;

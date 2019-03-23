@@ -226,7 +226,6 @@ MyGame.ship = (function(audio, graphics) {
       configurable: false
   });
 
-
   Object.defineProperty(api, 'thrusting', {
       value: thrusting,
       writable: true,

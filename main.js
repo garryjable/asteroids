@@ -1,4 +1,4 @@
-MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroids, saucers, audio) {
+MyGame.main = (function(graphics, particles, collisions, ship, rockets, lasers, asteroids, saucers, audio) {
   audio.playSound('resources/comptroller-crossover-dragon');
   var currentScore = 0;
   var highScores = [];
@@ -23,13 +23,16 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroid
   var saucersSpecs = saucers.getSaucersSpecs()
   var saucersTexture = graphics.saucersTexture(saucersSpecs);
 
-  let particlesLaser = particles.init({
-      center: { x: 300, y: 300 },
-      size: { mean: 15, stdev: 5 },
-      speed: { mean: 65, stdev: 35 },
-      lifetime: { mean: 4, stdev: 1}
-  });
+  var lasersSpecs = lasers.getLasersSpecs()
+  var lasersTexture = graphics.lasersTexture(lasersSpecs);
 
+//  let particlesLaser = particles.init({
+//      center: { x: 300, y: 300 },
+//      size: { mean: 15, stdev: 5 },
+//      speed: { mean: 65, stdev: 35 },
+//      lifetime: { mean: 4, stdev: 1}
+//  });
+//
 //  let particlesLaser = particles.create({
 //      center: { x: 300, y: 300 },
 //      size: { mean: 15, stdev: 5 },
@@ -43,13 +46,13 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroid
 //      lifetime: { mean: 4, stdev: 1}
 //  });
 
-  particlesSpecs = {
-    specList: [particlesLaser],
-    imageExplodeSrc: 'assets/laser.png',
-    imageThrustSrc: 'assets/laser.png',
-    imageHyperspaceSrc: 'assets/laser.png',
-  }
-  let particlesTexture = graphics.particlesTexture(particlesSpecs);
+//  particlesSpecs = {
+//    specList: [particlesLaser],
+//    imageExplodeSrc: 'assets/laser.png',
+//    imageThrustSrc: 'assets/laser.png',
+//    imageHyperspaceSrc: 'assets/laser.png',
+//  }
+//  let particlesTexture = graphics.particlesTexture(particlesSpecs);
 
 
   performance.now();
@@ -94,6 +97,15 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroid
             let rocket = rockets.createRocket(rocketParams);
             rockets.addRocket(rocket);
         }
+        let laserListParams = saucers.fire(elapsedTime);
+        debugger;
+        //if (laserListParams !== false) {
+        //    for (let i = 0; i < laserListParams.length; i++) {
+        //        let laser = lasers.createLaser(laserListParams[i]);
+        //        lasers.addLaser(laser);
+        //    }
+        //}
+
       } else if (nextInput[i] === 'hyperspace') {
         let asteroidsCollisionList = asteroids.getCollisionList()
         ship.hyperspace(asteroidsCollisionList);
@@ -111,7 +123,7 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroid
     rockets.update();
     saucers.update();
     asteroids.update();
-    particles.update();
+    //particles.update();
     let results = collisions.checkCollisions(rockets.getCollisionList(), asteroids.getCollisionList(), ship.getCollisionLoc(), saucers.getCollisionList());
     if (results.asteroids.length === 0) {
       level++;
@@ -133,12 +145,15 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroid
     saucersSpecs = saucers.getSaucersSpecs();
     saucersTexture.renderSaucer(saucersSpecs);
     saucersTexture.draw();
+    lasersSpecs = lasers.getLasersSpecs();
+    lasersTexture.renderLasers(lasersSpecs);
+    lasersTexture.draw();
     asteroidsSpecs = asteroids.getAsteroidsSpecs();
     asteroidsTexture.renderAsteroids(asteroidsSpecs);
     asteroidsTexture.draw();
-    particlesSpecs = particles.getParticlesSpecs();
-    particlesTexture.renderParticles(particlesSpecs);
-    particlesTexture.draw();
+    //particlesSpecs = particles.getParticlesSpecs();
+    //particlesTexture.renderParticles(particlesSpecs);
+    //particlesTexture.draw();
     shipSpec = ship.getShipSpec();
     shipTexture.renderShip(shipSpec);
     shipTexture.draw();
@@ -173,4 +188,4 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, asteroid
   document.onkeydown = startInput;
   document.onkeyup = stopInput;
 
-}(MyGame.graphics, MyGame.particles, MyGame.collisions, MyGame.ship, MyGame.rockets, MyGame.asteroids, MyGame.saucers, MyGame.audio));
+}(MyGame.graphics, MyGame.particles, MyGame.collisions, MyGame.ship, MyGame.rockets, MyGame.lasers, MyGame.asteroids, MyGame.saucers, MyGame.audio));

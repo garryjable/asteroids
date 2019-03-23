@@ -25,7 +25,7 @@ MyGame.particles = (function (random) {
     function getParticlesSpecs() {
       let particlesSpecs = [];
       for (let particle in this.particleList) {
-        let particleSpecs =  {
+        let particleSpecs = {
         center: {x: this.particleList[particle].center.x, y: this.particleList[particle].center.y},
         width: 10,
         height: 10,
