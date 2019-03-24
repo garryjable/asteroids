@@ -33,7 +33,8 @@ MyGame.saucers = (function(audio, ship, graphics) {
     }
     return {
              specList: saucerssSpecs,
-             imageSrc: 'resources/william-robinson-blob-alien-passive.gif',
+             imageSmallSrc: 'resources/william-robinson-blob-alien-explode.gif',
+             imageBigSrc: 'resources/william-robinson-blob-alien-passive.gif',
            };
   }
 
@@ -107,6 +108,7 @@ MyGame.saucers = (function(audio, ship, graphics) {
     const fireRate = 200;
     let lastShot = 0;
 
+    let size = params.size;
     let age = 0;
     let hit = false;
 
@@ -119,10 +121,11 @@ MyGame.saucers = (function(audio, ship, graphics) {
     function getSaucerSpec() {
       let saucersSpecTexture = {
         center: {x: this.xCoord, y: this.yCoord},
-        width: width,
-        height: height,
+        width: width * this.size,
+        height: height * this.size,
         rotation: this.orientation,
         age: this.age,
+        size: this.size,
       };
       return saucersSpecTexture;
     }
@@ -266,7 +269,12 @@ MyGame.saucers = (function(audio, ship, graphics) {
         configurable: false
     });
 
-
+    Object.defineProperty(api, 'size', {
+        value: size,
+        writable: true,
+        enumerable: true,
+        configurable: false
+    });
 
     return api;
   }

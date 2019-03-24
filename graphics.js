@@ -167,13 +167,18 @@ MyGame.graphics = (function() {
 
     function saucersTexture(specs) {
         let ready = false;
-        let image = new Image();
+        let imageSmall = new Image();
+        let imageBig = new Image();
         let specList = specs.specList;
 
-        image.onload = function() {
+        imageSmall.onload = function() {
             ready = true;
         };
-        image.src = specs.imageSrc;
+        imageBig.onload = function() {
+            ready = true;
+        };
+        imageSmall.src = specs.imageSmallSrc;
+        imageBig.src = specs.imageBigSrc;
 
         function draw() {
             if (ready) {
@@ -184,12 +189,19 @@ MyGame.graphics = (function() {
                   context.rotate(this.specList[i].rotation);
                   context.translate(-this.specList[i].center.x, -this.specList[i].center.y);
 
+                  if (this.specList[i].size === 1) {
                   context.drawImage(
-                      image,
+                      imageBig,
                       this.specList[i].center.x - this.specList[i].width / 2,
                       this.specList[i].center.y - this.specList[i].height / 2,
                       this.specList[i].width, this.specList[i].height);
-
+                  } else if (this.specList[i].size === 2) {
+                  context.drawImage(
+                      imageSmall,
+                      this.specList[i].center.x - this.specList[i].width / 2,
+                      this.specList[i].center.y - this.specList[i].height / 2,
+                      this.specList[i].width, this.specList[i].height);
+                  }
                   context.restore();
                 }
             }

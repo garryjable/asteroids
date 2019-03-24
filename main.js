@@ -1,5 +1,5 @@
 MyGame.main = (function(graphics,/* particles,*/ collisions, ship, rockets, lasers, asteroids, saucers, audio) {
-  audio.playSound('resources/comptroller-crossover-dragon');
+//  audio.playSound('resources/comptroller-crossover-dragon');
   var currentScore = 0;
   var highScores = [];
   var lastMoveStamp = 0;
@@ -7,6 +7,11 @@ MyGame.main = (function(graphics,/* particles,*/ collisions, ship, rockets, lase
   var moveRate = 17;
   var level = 1;
   var levelComplete = true;
+
+  var smallSaucerRate = 30000;
+  var lastSmallSaucer = 0;
+  var bigSaucerRate = 10000;
+  var lastBigSaucer = 0;
 
   var nextInput;
   var input = [];
@@ -97,13 +102,6 @@ MyGame.main = (function(graphics,/* particles,*/ collisions, ship, rockets, lase
             let rocket = rockets.createRocket(rocketParams);
             rockets.addRocket(rocket);
         }
-        let laserListParams = saucers.fire(elapsedTime);
-        if (laserListParams !== false) {
-            for (let i = 0; i < laserListParams.length; i++) {
-                let laser = lasers.createLaser(laserListParams[i]);
-                lasers.addLaser(laser);
-            }
-        }
 
       } else if (nextInput[i] === 'hyperspace') {
         let asteroidsCollisionList = asteroids.getCollisionList()
@@ -115,10 +113,31 @@ MyGame.main = (function(graphics,/* particles,*/ collisions, ship, rockets, lase
         let asteroidParams = asteroids.spawn(level, 3);
         asteroids.addAsteroids(asteroidParams);
 
-        let saucersParams = saucers.spawn(level);
-        let newSaucer = saucers.createSaucer(saucersParams);
-        saucers.addSaucer(newSaucer);
     }
+
+    let laserListParams = saucers.fire(elapsedTime);
+    if (laserListParams !== false) {
+        for (let i = 0; i < laserListParams.length; i++) {
+            let laser = lasers.createLaser(laserListParams[i]);
+            lasers.addLaser(laser);
+        }
+    }
+
+
+    if (elapsedTime - lastBigSaucer >= bigSaucerRate) {
+      lastBigSaucer = elapsedTime;
+      let saucersParams = saucers.spawn(level);
+      let newSaucer = saucers.createSaucer(saucersParams);
+      saucers.addSaucer(newSaucer);
+    }
+    if (elapsedTime - lastSmallSaucer >= smallSaucerRate) {
+      lastSmallSaucer = elapsedTime;
+      let saucersParams = saucers.spawn(level);
+      let newSaucer = saucers.createSaucer(saucersParams);
+      saucers.addSaucer(newSaucer);
+    }
+
+
     rockets.update();
     saucers.update();
     asteroids.update();
