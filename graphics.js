@@ -27,6 +27,7 @@ MyGame.graphics = (function() {
         image.src = spec.imageSrc;
 
         function draw() {
+          if (spec.show) {
             if (ready) {
                 context.save();
 
@@ -42,12 +43,14 @@ MyGame.graphics = (function() {
 
                 context.restore();
             }
+          }
         }
 
         function renderShip(newSpec) {
             spec.rotation = newSpec.rotation;
             spec.center.x = newSpec.center.x;
             spec.center.y = newSpec.center.y;
+            spec.show = newSpec.show;
         }
 
         return {

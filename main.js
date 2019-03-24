@@ -1,4 +1,4 @@
-MyGame.main = (function(graphics, particles, collisions, ship, rockets, lasers, asteroids, saucers, audio) {
+MyGame.main = (function(graphics,/* particles,*/ collisions, ship, rockets, lasers, asteroids, saucers, audio) {
   audio.playSound('resources/comptroller-crossover-dragon');
   var currentScore = 0;
   var highScores = [];
@@ -98,13 +98,12 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, lasers, 
             rockets.addRocket(rocket);
         }
         let laserListParams = saucers.fire(elapsedTime);
-        debugger;
-        //if (laserListParams !== false) {
-        //    for (let i = 0; i < laserListParams.length; i++) {
-        //        let laser = lasers.createLaser(laserListParams[i]);
-        //        lasers.addLaser(laser);
-        //    }
-        //}
+        if (laserListParams !== false) {
+            for (let i = 0; i < laserListParams.length; i++) {
+                let laser = lasers.createLaser(laserListParams[i]);
+                lasers.addLaser(laser);
+            }
+        }
 
       } else if (nextInput[i] === 'hyperspace') {
         let asteroidsCollisionList = asteroids.getCollisionList()
@@ -123,6 +122,7 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, lasers, 
     rockets.update();
     saucers.update();
     asteroids.update();
+    lasers.update();
     //particles.update();
     let results = collisions.checkCollisions(rockets.getCollisionList(), asteroids.getCollisionList(), ship.getCollisionLoc(), saucers.getCollisionList());
     if (results.asteroids.length === 0) {
@@ -132,8 +132,8 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, lasers, 
     rockets.handleCollisions(results.rockets);
     asteroids.handleCollisions(results.asteroids);
     saucers.handleCollisions(results.saucers);
-    ship.handleCollisions(results.ship);
-    ship.update();
+    ship.handleCollisions(results.ship, elapsedTime);
+    ship.update(elapsedTime);
   }
 
   function render() {
@@ -188,4 +188,4 @@ MyGame.main = (function(graphics, particles, collisions, ship, rockets, lasers, 
   document.onkeydown = startInput;
   document.onkeyup = stopInput;
 
-}(MyGame.graphics, MyGame.particles, MyGame.collisions, MyGame.ship, MyGame.rockets, MyGame.lasers, MyGame.asteroids, MyGame.saucers, MyGame.audio));
+}(MyGame.graphics,/* MyGame.particles,*/ MyGame.collisions, MyGame.ship, MyGame.rockets, MyGame.lasers, MyGame.asteroids, MyGame.saucers, MyGame.audio));

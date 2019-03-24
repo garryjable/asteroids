@@ -1,15 +1,14 @@
 MyGame.collisions = (function() {
     'use strict';
-
     function checkCollisions(rockets, asteroids, ship, saucers) {
       for (let j = 0; j < asteroids.length; j++) {
         let xDistAstShip = Math.abs(ship.xCoord - asteroids[j].xCoord);
         let yDistAstShip = Math.abs(ship.yCoord - asteroids[j].yCoord);
         let distanceAstShip = Math.sqrt(xDistAstShip**2 + yDistAstShip**2);
         if (ship.radius + asteroids[j].radius >= distanceAstShip) {
-          ship.hit = true;
-        } else {
-          ship.hit = false;
+          if (ship.immortal === false) {
+            ship.hit = true;
+          }
         }
         for (let i = 0; i < rockets.length; i++) {
           let xDistAstRoc = Math.abs(rockets[i].xCoord - asteroids[j].xCoord);
