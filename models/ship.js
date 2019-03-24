@@ -4,8 +4,8 @@ MyGame.ship = (function(audio, graphics) {
   let lastShot = 0;
   let width = 75;
   let height = 75;
-  let xCoord = 500;
-  let yCoord = 500;
+  let xCoord = graphics.canvas.width / 2;
+  let yCoord = graphics.canvas.height / 2;
   let orientation = 0;
   let xSpeed = 0;
   let ySpeed = 0;
@@ -14,6 +14,14 @@ MyGame.ship = (function(audio, graphics) {
   let thrusting = false;
   let turning = 0;
   let lives = 3;
+  let dead = false;
+  let show = true;
+  let immortal = false;
+  let respawnRate = 3000;
+  let flickerRate = 50;
+  let lastFlicker = 0;
+  let immortalTime = 6000;
+  let lastDeath = 0;
 
   function getShipSpec() {
     let shipSpecTexture = {
@@ -21,6 +29,7 @@ MyGame.ship = (function(audio, graphics) {
       center: {x: this.xCoord, y: this.yCoord},
       width: width,
       height: height,
+      show: this.show,
       rotation: this.orientation,
     };
     return shipSpecTexture;
@@ -30,12 +39,13 @@ MyGame.ship = (function(audio, graphics) {
     let shipCoord = {
       xCoord: this.xCoord,
       yCoord: this.yCoord,
+      immortal: this.immortal,
       radius: this.width / 2,
     }
     return shipCoord;
   }
 
-  function update() {
+  function update(elapsedTime) {
     if (this.xSpeed > 0) {
       if (this.xCoord + this.xSpeed > graphics.canvas.width + graphics.buffer) {
         this.xCoord = 0;
@@ -73,59 +83,68 @@ MyGame.ship = (function(audio, graphics) {
     } else if (this.turning < 0) {
       this.turnCounterClockwise();
     }
+    if (this.dead === true || this.immortal === true) {
+      this.updateRespawn(elapsedTime);
+    }
     return;
   }
 
   function turnClockwise(){
-    if (this.orientation < graphics.cycle) {
-      this.orientation = this.orientation + this.turnRate;
-    } else {
-      this.orientation = this.orientation + this.turnRate - graphics.cycle;
+    if (this.dead === false) {
+      if (this.orientation < graphics.cycle) {
+        this.orientation = this.orientation + this.turnRate;
+      } else {
+        this.orientation = this.orientation + this.turnRate - graphics.cycle;
+      }
     }
   }
 
   function turnCounterClockwise() {
-    if (this.orientation > 0) {
-      this.orientation = this.orientation - this.turnRate;
-    } else {
-      this.orientation = graphics.cycle + this.orientation - this.turnRate;
+    if (this.dead === false) {
+      if (this.orientation > 0) {
+        this.orientation = this.orientation - this.turnRate;
+      } else {
+        this.orientation = graphics.cycle + this.orientation - this.turnRate;
+      }
     }
   }
 
   function hyperspace(asteroids) {
-    audio.playSound('resources/hyperspace');
-    let safe = false;
-    let safeDist = 200;
-    let randXCoord = Math.floor(Math.random() * (graphics.canvas.width + 1));
-    let randYCoord = Math.floor(Math.random() * (graphics.canvas.height + 1));
-    let shipLoc = this.getCollisionLoc();
-    while (!safe) {
-      safe = true;
-      for (let j = 0; j < asteroids.length; j++) {
-        let xDistAst = Math.abs(randXCoord - asteroids[j].xCoord);
-        let yDistAst = Math.abs(randYCoord - asteroids[j].yCoord);
-        let distanceAst = Math.sqrt(xDistAst**2 + yDistAst**2);
-        if (shipLoc.radius + asteroids[j].radius + distanceAst <= safeDist) {
-          safe = false;
+    if (this.dead === false) {
+      audio.playSound('resources/hyperspace');
+      let safe = false;
+      let safeDist = 200;
+      let randXCoord = Math.floor(Math.random() * (graphics.canvas.width + 1));
+      let randYCoord = Math.floor(Math.random() * (graphics.canvas.height + 1));
+      let shipLoc = this.getCollisionLoc();
+      while (!safe) {
+        safe = true;
+        for (let j = 0; j < asteroids.length; j++) {
+          let xDistAst = Math.abs(randXCoord - asteroids[j].xCoord);
+          let yDistAst = Math.abs(randYCoord - asteroids[j].yCoord);
+          let distanceAst = Math.sqrt(xDistAst**2 + yDistAst**2);
+          if (shipLoc.radius + asteroids[j].radius + distanceAst <= safeDist) {
+            safe = false;
+          }
         }
-      }
-      if (safe === true) {
-        this.xCoord = randXCoord;
-        this.yCoord = randYCoord;
-        this.orientation = Math.random() * (graphics.cycle);
-        this.xSpeed = 0;
-        this.ySpeed = 0;
-      } else {
-        randXCoord = Math.floor(Math.random() * (graphics.canvas.width + 1));
-        randYCoord = Math.floor(Math.random() * (graphics.canvas.height + 1));
+        if (safe === true) {
+          this.xCoord = randXCoord;
+          this.yCoord = randYCoord;
+          this.orientation = Math.random() * (graphics.cycle);
+          this.xSpeed = 0;
+          this.ySpeed = 0;
+        } else {
+          randXCoord = Math.floor(Math.random() * (graphics.canvas.width + 1));
+          randYCoord = Math.floor(Math.random() * (graphics.canvas.height + 1));
+        }
       }
     }
     return;
   }
 
   function fire(elapsedTime) {
-    audio.playSound('resources/rocket');
-    if (elapsedTime - this.lastShot >= this.fireRate) {
+    if (elapsedTime - this.lastShot >= this.fireRate && this.dead === false) {
+      audio.playSound('resources/rocket');
       this.lastShot = elapsedTime;
       let rocketParams = {
         center: {x: this.xCoord, y: this.yCoord},
@@ -139,17 +158,42 @@ MyGame.ship = (function(audio, graphics) {
   }
 
   function thrust() {
-    this.xSpeed = this.xSpeed + Math.sin(this.orientation) * this.acceleration;
-    this.ySpeed = this.ySpeed - Math.cos(this.orientation) * this.acceleration;
-  }
-
-  function handleCollisions(results) {
-    if (results.hit === true) {
-      audio.playSound('resources/ship-death');
+    if (this.dead === false) {
+      this.xSpeed = this.xSpeed + Math.sin(this.orientation) * this.acceleration;
+      this.ySpeed = this.ySpeed - Math.cos(this.orientation) * this.acceleration;
     }
   }
 
-  function explode() {
+  function handleCollisions(results, elapsedTime) {
+    if (results.hit === true) {
+      audio.playSound('resources/ship-death');
+      if (this.lives > 0) {
+        this.lives--;
+        this.dead = true;
+        this.immortal = true;
+        this.show = false;
+        this.lastDeath = elapsedTime;
+        this.orientation = Math.random() * (graphics.cycle);
+        this.xSpeed = 0;
+        this.ySpeed = 0;
+        this.xCoord = graphics.canvas.width / 2;
+        this.yCoord = graphics.canvas.height / 2;
+      }
+    }
+  }
+
+  function updateRespawn(elapsedTime) {
+    if (elapsedTime - this.lastDeath >= this.respawnRate) {
+      this.dead = false;
+      if (elapsedTime - this.lastFlicker >= this.flickerRate) {
+        this.lastFlicker = elapsedTime;
+        this.show = !this.show;
+        if (elapsedTime - this.lastDeath >= this.immortalTime) {
+          this.immortal = false;
+          this.show = true;
+        }
+      }
+    }
   }
 
   let api = {
@@ -160,14 +204,9 @@ MyGame.ship = (function(audio, graphics) {
       getCollisionLoc: getCollisionLoc,
       handleCollisions: handleCollisions,
       hyperspace: hyperspace,
+      updateRespawn: updateRespawn,
       fire: fire,
       thrust: thrust,
-      explode: explode,
-      orientation: orientation,
-      xSpeed: xSpeed,
-      ySpeed: ySpeed,
-      acceleration: acceleration,
-      cycle: graphics.cycle,
   };
 
   Object.defineProperty(api, 'width', {
@@ -261,6 +300,68 @@ MyGame.ship = (function(audio, graphics) {
       configurable: false
   });
 
+  Object.defineProperty(api, 'dead', {
+      value: dead,
+      writable: true,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'show', {
+      value: show,
+      writable: true,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'immortal', {
+      value: immortal,
+      writable: true,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'immortalTime', {
+      value: immortalTime,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'acceleration', {
+      value: acceleration,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'respawnRate', {
+      value: respawnRate,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'flickerRate', {
+      value: flickerRate,
+      writable: false,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'lastFlicker', {
+      value: lastFlicker,
+      writable: true,
+      enumerable: true,
+      configurable: false
+  });
+
+  Object.defineProperty(api, 'lastDeath', {
+      value: lastDeath,
+      writable: true,
+      enumerable: true,
+      configurable: false
+  });
 
   return api;
 

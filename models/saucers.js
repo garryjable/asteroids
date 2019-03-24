@@ -164,8 +164,8 @@ MyGame.saucers = (function(audio, ship, graphics) {
     }
 
     function fire(elapsedTime) {
-      audio.playSound('resources/laser');
       if (elapsedTime - this.lastShot >= this.fireRate) {
+        audio.playSound('resources/laser');
         this.lastShot = elapsedTime;
         let laserParams = {
           center: {x: this.xCoord, y: this.yCoord},
@@ -251,6 +251,22 @@ MyGame.saucers = (function(audio, ship, graphics) {
         enumerable: true,
         configurable: false
     });
+
+    Object.defineProperty(api, 'lastShot', {
+        value: lastShot,
+        writable: true,
+        enumerable: true,
+        configurable: false
+    });
+
+    Object.defineProperty(api, 'fireRate', {
+        value: fireRate,
+        writable: true,
+        enumerable: true,
+        configurable: false
+    });
+
+
 
     return api;
   }

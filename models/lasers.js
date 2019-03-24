@@ -6,7 +6,7 @@ MyGame.lasers = (function(graphics) {
   function update() {
     let newLaserList = [];
     for (let i = 0; i < this.laserList.length; i++) {
-      this.laserList[i].update(graphics.canvas.width, graphics.canvas.height);
+      this.laserList[i].update();
       if (this.laserList[i].age * 30 < graphics.canvas.width * .60 && this.laserList[i].hit !== true) {
         newLaserList.push(this.laserList[i]);
       }
